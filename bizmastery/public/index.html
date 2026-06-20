@@ -308,7 +308,13 @@
     </div>
   </div>
   <div class="section">
-    <div class="alert gold">💡 <strong>Maryland Note:</strong> Your state fee is $100 for LLC. Annual reports are due April 15 each year. Maryland has a personal property tax on business assets — file Form 1 by April 15.</div>
+    <div class="state-selector">
+      <label>Select Your State</label>
+      <select id="setupStateSelect" onchange="updateSetupStateNote()">
+        <option value="">-- Choose a State --</option>
+      </select>
+    </div>
+    <div class="alert gold" id="setupStateNote">💡 Select your state above to see state-specific fees, tax info, and filing deadlines.</div>
 
     <div id="phases"></div>
   </div>
@@ -785,6 +791,16 @@ function renderStates() {
     opt.value = s; opt.textContent = s;
     sel.appendChild(opt);
   });
+
+  // Also populate the setup page state dropdown
+  const setupSel = document.getElementById('setupStateSelect');
+  if (setupSel) {
+    Object.keys(STATES).sort().forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      setupSel.appendChild(opt);
+    });
+  }
   
   const highlights = document.getElementById('stateHighlights');
   if (!highlights) return;
@@ -828,6 +844,28 @@ function showStateInfo() {
     <div style="margin-top:1rem;padding:.8rem 1rem;background:var(--white);border-radius:8px;border:1px solid var(--gray1);font-size:.82rem;color:var(--gray3)">
       <strong>Where to File:</strong> Visit the ${state} Secretary of State website (or equivalent) to register your LLC. Search "${state} Secretary of State LLC filing" for the official portal. Most states allow online filing.
     </div>`;
+}
+
+function renderSetupStateDropdown() {
+  const sel = document.getElementById('setupStateSelect');
+  if (!sel || sel.options.length > 1) return;
+  Object.keys(STATES).sort().forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    sel.appendChild(opt);
+  });
+}
+
+function updateSetupStateNote() {
+  const sel = document.getElementById('setupStateSelect');
+  const note = document.getElementById('setupStateNote');
+  const state = sel.value;
+  if (!state || !STATES[state]) {
+    note.innerHTML = '💡 Select your state above to see state-specific fees, tax info, and filing deadlines.';
+    return;
+  }
+  const d = STATES[state];
+  note.innerHTML = `💡 <strong>${state}:</strong> LLC filing fee $${d.llcFee}. Annual report fee $${d.annualFee} due ${d.annualDue}. State corp tax ${d.stateTax}. Sales tax ${d.salesTax}. ${d.notes}`;
 }
 
 function renderBizTypes() {
@@ -1023,7 +1061,7 @@ function showPage(id) {
   if (btn) btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   
-  if (id==='setup') renderPhases();
+  if (id==='setup') { renderPhases(); renderSetupStateDropdown(); }
   if (id==='states') renderStates();
   if (id==='types') renderBizTypes();
   if (id==='govcon') renderGovCon();
