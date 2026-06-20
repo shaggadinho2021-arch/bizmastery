@@ -749,9 +749,47 @@ const CREDIT_TIERS = [
 
 // ─── RENDER FUNCTIONS ────────────────────────────────────────────────────────
 
-function renderPhases() {
+function getStateOverrides(state, d) {
+  return {
+    '0-2': { tip: `${state} requires a registered agent with a physical ${state} address available during business hours. You can serve as your own registered agent if you have a ${state} address, or hire a service. Using your home address makes it public record — a registered agent service ($49–$125/yr) gives you privacy.` },
+    '0-4': { tip: `Search "${state} business license requirements" or visit your ${state} Secretary of State website to see every license required by industry and locality. Most states have an online license lookup tool where you enter your business type and location to get a full list.` },
+    '1-4': {
+      title: `Understand ${state} Tax Obligations`,
+      desc: `${state} has a state corporate tax rate of ${d.stateTax} and sales tax of ${d.salesTax}. Annual LLC report fee is $${d.annualFee}${d.annualDue !== 'None' ? `, due ${d.annualDue}` : ' (no annual report required)'}. ${d.notes}`,
+      tip: `Key ${state} numbers: LLC filing fee $${d.llcFee} · Annual report $${d.annualFee}${d.annualDue !== 'None' ? ` due ${d.annualDue}` : ' (none required)'} · Corp tax ${d.stateTax} · Sales tax ${d.salesTax}. Register with your ${state} tax authority for all applicable taxes from day one to avoid penalties.`
+    },
+    '2-0': { tip: `In ${state}, trade names (DBAs) are registered with the Secretary of State or equivalent state agency. Example: Your LLC is "Johnson Holdings LLC" but you operate as "Johnson Cleaning Services" — file a trade name for the operating name. Check the ${state} Secretary of State website for the current fee and form.` },
+    '3-2': {
+      title: `File ${state} Annual Report${d.annualFee > 0 ? ` ($${d.annualFee})` : ' (Free)'}`,
+      desc: `${d.annualDue !== 'None' ? `Due ${d.annualDue} each year. ` : ''}${d.annualFee > 0 ? `Annual report fee is $${d.annualFee} for LLCs in ${state}.` : `Annual report filing is free in ${state}.`} ${d.notes}`,
+      tip: `${state} annual report${d.annualDue !== 'None' ? ` is due ${d.annualDue}` : ' has no annual requirement'}. ${d.annualFee > 0 ? `Fee: $${d.annualFee}.` : 'No fee.'} Missing your annual report risks losing Good Standing status — which blocks government contracts, business credit applications, and bank accounts.`
+    },
+    '4-2': {
+      title: `Register on ${state}'s State Procurement Portal`,
+      desc: `${state} maintains its own state procurement portal where agencies post solicitations, RFPs, and IFBs. Free to register. This is separate from SAM.gov (federal) and is required for all state agency contracts.`,
+      tip: `Search "${state} state procurement vendor registration" to find the official portal. Complete your vendor profile 100% and set up email alerts by commodity/service category. State contracts are often less competitive than federal — great starting point for new businesses.`
+    },
+    '4-3': {
+      tip: `${state} counties and cities each have their own procurement offices. Search "[your county] ${state} procurement vendor registration" to sign up locally. Local contracts under $25k–$100k often have minimal competition and faster award timelines — perfect for building your first past performance references.`
+    },
+    '5-0': {
+      title: `MBE / Minority Business Certification (${state})`,
+      desc: `${state} has a Minority Business Enterprise (MBE) or equivalent program that creates set-aside contracts for certified minority and women-owned businesses across state agencies.`,
+      tip: `Search "${state} MBE certification" or "${state} minority business enterprise program." Most states administer through their Department of Transportation or Governor's Office of Minority Affairs. Required documents: 3 years tax returns, LLC articles, operating agreement, owner personal financial statement, proof of 51%+ minority/women ownership.`
+    },
+    '5-2': {
+      title: `DBE — Disadvantaged Business Enterprise (${state})`,
+      desc: `For federally-funded transportation, highway, and infrastructure projects in ${state}. DBE is a federally mandated program administered by your state DOT on all USDOT-funded projects.`,
+      tip: `Search "${state} DOT DBE program" for the application. If your business does any work on federally-funded roads, bridges, airports, or transit in ${state}, DBE certification is essential. Apply at the same time as MBE — most of the paperwork overlaps.`
+    }
+  };
+}
+
+function renderPhases(state) {
   const container = document.getElementById('phases');
   if (!container) return;
+  const stateData = state && STATES[state] ? STATES[state] : null;
+  const overrides = stateData ? getStateOverrides(state, stateData) : {};
   container.innerHTML = PHASES.map((ph,pi) => `
     <div class="phase-container">
       <div class="phase-header" onclick="togglePhase(${pi})">
@@ -760,17 +798,22 @@ function renderPhases() {
         <div class="phase-toggle" id="ptoggle-${pi}">▼</div>
       </div>
       <div class="phase-body ${pi===0?'open':''}" id="pbody-${pi}">
-        ${ph.steps.map((s,si) => `
+        ${ph.steps.map((s,si) => {
+          const ov = overrides[pi+'-'+si] || {};
+          const title = ov.title || s.title;
+          const desc = ov.desc || s.desc;
+          const tip = ov.tip || s.tip;
+          return `
           <div class="step-row">
             <div class="step-num">${si+1}</div>
             <div class="step-content">
-              <h4>${s.title}</h4>
-              <p>${s.desc}</p>
+              <h4>${title}</h4>
+              <p>${desc}</p>
               ${s.resources.map(r=>`<span class="resource">${r}</span>`).join('')}
-              ${s.tip?`<div class="tip">💡 <strong>Example/Tip:</strong> ${s.tip}</div>`:''}
+              ${tip?`<div class="tip">💡 <strong>${stateData?state+' Tip':'Example/Tip'}:</strong> ${tip}</div>`:''}
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
     </div>
   `).join('');
@@ -862,10 +905,12 @@ function updateSetupStateNote() {
   const state = sel.value;
   if (!state || !STATES[state]) {
     note.innerHTML = '💡 Select your state above to see state-specific fees, tax info, and filing deadlines.';
+    renderPhases();
     return;
   }
   const d = STATES[state];
-  note.innerHTML = `💡 <strong>${state}:</strong> LLC filing fee $${d.llcFee}. Annual report fee $${d.annualFee} due ${d.annualDue}. State corp tax ${d.stateTax}. Sales tax ${d.salesTax}. ${d.notes}`;
+  note.innerHTML = `💡 <strong>${state}:</strong> LLC filing fee $${d.llcFee} · Annual report $${d.annualFee} due ${d.annualDue} · Corp tax ${d.stateTax} · Sales tax ${d.salesTax}. ${d.notes}`;
+  renderPhases(state);
 }
 
 function renderBizTypes() {
