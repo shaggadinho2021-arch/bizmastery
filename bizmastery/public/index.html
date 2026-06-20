@@ -1,2 +1,1061 @@
-<!-- PASTE THE FULL WEBSITE HTML HERE FROM THE CLAUDE ARTIFACT -->
-<!-- Replace the handleEmailSubmit() function with the API version below -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BizMastery — Start, Build & Scale Any Business</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#0a1628;--navy2:#0f2044;--gold:#c9a227;--gold2:#e8b84b;
+    --teal:#0e7c6b;--teal2:#12a088;--white:#ffffff;--offwhite:#f8f7f4;
+    --gray1:#e8e6e0;--gray2:#b5b2a8;--gray3:#6b6860;--gray4:#2c2c2a;
+    --red:#c0392b;--green:#1a7a4a;--blue:#1a5fa5;
+    --radius:10px;--radius-lg:16px;
+    font-family:'Segoe UI',system-ui,sans-serif;
+  }
+  body{background:var(--offwhite);color:var(--navy);line-height:1.6}
+
+  /* NAV */
+  nav{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;border-bottom:2px solid var(--gold)}
+  .nav-logo{color:var(--gold);font-size:1.3rem;font-weight:700;cursor:pointer;letter-spacing:-.5px}
+  .nav-logo span{color:var(--white)}
+  .nav-links{display:flex;gap:0;align-items:center}
+  .nav-btn{background:none;border:none;color:var(--gray2);font-size:.85rem;padding:.5rem .9rem;cursor:pointer;border-radius:6px;transition:.2s;font-family:inherit;white-space:nowrap}
+  .nav-btn:hover,.nav-btn.active{color:var(--gold);background:rgba(201,162,39,.12)}
+  .nav-cta{background:var(--gold);color:var(--navy);padding:.45rem 1.1rem;border-radius:6px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;font-family:inherit;margin-left:.5rem}
+  .nav-cta:hover{background:var(--gold2)}
+
+  /* PAGES */
+  .page{display:none;animation:fadeIn .3s ease}
+  .page.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,var(--navy) 60%,var(--navy2));color:var(--white);padding:5rem 2rem 4rem;text-align:center}
+  .hero-badge{display:inline-block;background:rgba(201,162,39,.2);color:var(--gold);border:1px solid rgba(201,162,39,.4);padding:.3rem 1rem;border-radius:20px;font-size:.8rem;font-weight:600;letter-spacing:.5px;margin-bottom:1.5rem}
+  .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:1.2rem}
+  .hero h1 span{color:var(--gold)}
+  .hero p{font-size:1.1rem;color:var(--gray2);max-width:620px;margin:0 auto 2rem}
+  .hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn-gold{background:var(--gold);color:var(--navy);padding:.75rem 2rem;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;border:none;font-family:inherit;transition:.2s}
+  .btn-gold:hover{background:var(--gold2);transform:translateY(-1px)}
+  .btn-outline{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.3);padding:.75rem 2rem;border-radius:8px;font-weight:600;font-size:1rem;cursor:pointer;font-family:inherit;transition:.2s}
+  .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+  .hero-stats{display:flex;gap:3rem;justify-content:center;margin-top:3rem;flex-wrap:wrap}
+  .stat-item{text-align:center}
+  .stat-num{font-size:2rem;font-weight:800;color:var(--gold)}
+  .stat-lbl{font-size:.8rem;color:var(--gray2);text-transform:uppercase;letter-spacing:.5px}
+
+  /* SECTIONS */
+  .section{padding:3rem 2rem;max-width:1100px;margin:0 auto}
+  .section-title{font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:.5rem}
+  .section-sub{color:var(--gray3);margin-bottom:2rem;font-size:.95rem}
+  .gold-line{width:50px;height:3px;background:var(--gold);margin-bottom:1.5rem}
+
+  /* CARDS GRID */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
+  .card{background:var(--white);border:1px solid var(--gray1);border-radius:var(--radius-lg);padding:1.4rem;transition:.2s;cursor:pointer}
+  .card:hover{border-color:var(--gold);box-shadow:0 4px 20px rgba(201,162,39,.12);transform:translateY(-2px)}
+  .card-icon{font-size:1.8rem;margin-bottom:.8rem}
+  .card-title{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:.4rem}
+  .card-desc{font-size:.85rem;color:var(--gray3);line-height:1.5}
+  .card-tag{display:inline-block;background:rgba(201,162,39,.12);color:var(--gold);padding:.2rem .6rem;border-radius:4px;font-size:.72rem;font-weight:600;margin-top:.7rem}
+  .card-tag.blue{background:rgba(26,95,165,.1);color:var(--blue)}
+  .card-tag.green{background:rgba(26,122,74,.1);color:var(--green)}
+  .card-tag.red{background:rgba(192,57,43,.1);color:var(--red)}
+
+  /* PHASE STEPS */
+  .phase-container{margin:2rem 0}
+  .phase-header{background:var(--navy);color:var(--white);padding:1.2rem 1.5rem;border-radius:var(--radius) var(--radius) 0 0;display:flex;align-items:center;gap:1rem;cursor:pointer}
+  .phase-num{background:var(--gold);color:var(--navy);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0}
+  .phase-title{font-weight:700;font-size:1.05rem;flex:1}
+  .phase-toggle{color:var(--gold);font-size:1.2rem;transition:.3s}
+  .phase-body{background:var(--white);border:1px solid var(--gray1);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1.5rem;display:none}
+  .phase-body.open{display:block}
+  .step-row{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--gray1)}
+  .step-row:last-child{border-bottom:none}
+  .step-num{background:var(--offwhite);border:2px solid var(--gold);color:var(--gold);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;flex-shrink:0;margin-top:2px}
+  .step-content h4{font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.3rem}
+  .step-content p{font-size:.85rem;color:var(--gray3);line-height:1.6}
+  .step-content .resource{display:inline-block;background:var(--navy);color:var(--gold);padding:.2rem .7rem;border-radius:4px;font-size:.75rem;font-weight:600;margin-top:.5rem;margin-right:.4rem}
+  .step-content .tip{background:rgba(201,162,39,.08);border-left:3px solid var(--gold);padding:.6rem .8rem;border-radius:0 6px 6px 0;font-size:.8rem;margin-top:.6rem;color:var(--gray4)}
+
+  /* STATE DROPDOWN */
+  .state-selector{background:var(--white);border:1px solid var(--gray1);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:2rem}
+  .state-selector label{display:block;font-weight:700;color:var(--navy);margin-bottom:.6rem;font-size:.9rem}
+  .state-selector select{width:100%;max-width:380px;padding:.7rem 1rem;border:1.5px solid var(--gray1);border-radius:8px;font-size:.9rem;font-family:inherit;color:var(--navy);background:var(--white);cursor:pointer}
+  .state-selector select:focus{outline:none;border-color:var(--gold)}
+  .state-info{background:var(--offwhite);border-radius:var(--radius);padding:1.2rem;margin-top:1rem;display:none}
+  .state-info.show{display:block}
+  .state-info h3{color:var(--navy);font-size:1rem;font-weight:700;margin-bottom:.8rem}
+  .state-detail{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem}
+  .state-item{background:var(--white);border-radius:8px;padding:.8rem;border:1px solid var(--gray1)}
+  .state-item-label{font-size:.72rem;font-weight:700;color:var(--gray2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem}
+  .state-item-value{font-size:.88rem;color:var(--navy);font-weight:600}
+
+  /* BUSINESS TYPES */
+  .biz-filter{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+  .filter-btn{background:var(--white);border:1.5px solid var(--gray1);color:var(--gray3);padding:.4rem .9rem;border-radius:20px;font-size:.82rem;cursor:pointer;font-family:inherit;transition:.2s}
+  .filter-btn:hover,.filter-btn.active{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+  .biz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.9rem}
+  .biz-card{background:var(--white);border:1px solid var(--gray1);border-radius:var(--radius);padding:1.1rem;cursor:pointer;transition:.2s}
+  .biz-card:hover{border-color:var(--teal);transform:translateY(-1px)}
+  .biz-card-head{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
+  .biz-emoji{font-size:1.5rem;flex-shrink:0}
+  .biz-name{font-weight:700;font-size:.9rem;color:var(--navy)}
+  .biz-cat{display:inline-block;font-size:.7rem;padding:.15rem .5rem;border-radius:3px;font-weight:600;background:rgba(14,124,107,.1);color:var(--teal)}
+  .biz-summary{font-size:.8rem;color:var(--gray3);line-height:1.5}
+  .biz-meta{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+  .meta-pill{font-size:.7rem;padding:.15rem .5rem;border-radius:3px;font-weight:600}
+  .meta-pill.startup{background:rgba(26,95,165,.1);color:var(--blue)}
+  .meta-pill.income{background:rgba(201,162,39,.12);color:#8a6f0a}
+  .meta-pill.diff{background:rgba(192,57,43,.08);color:var(--red)}
+
+  /* GOV CONTRACTS */
+  .roadmap{position:relative;padding-left:2.5rem}
+  .roadmap::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(var(--gold),var(--teal))}
+  .roadmap-step{position:relative;margin-bottom:1.8rem}
+  .roadmap-dot{position:absolute;left:-2.5rem;top:4px;width:22px;height:22px;background:var(--gold);border-radius:50%;border:3px solid var(--white);box-shadow:0 0 0 2px var(--gold)}
+  .roadmap-content{background:var(--white);border:1px solid var(--gray1);border-radius:var(--radius);padding:1.1rem 1.2rem}
+  .roadmap-content h4{font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.4rem}
+  .roadmap-content p{font-size:.83rem;color:var(--gray3);line-height:1.6}
+  .roadmap-content .link-pill{display:inline-block;background:var(--navy);color:var(--gold);padding:.2rem .7rem;border-radius:4px;font-size:.75rem;font-weight:600;margin-top:.5rem;margin-right:.3rem}
+  .roadmap-content .note{background:rgba(14,124,107,.07);border-left:3px solid var(--teal);padding:.5rem .7rem;border-radius:0 6px 6px 0;font-size:.78rem;margin-top:.6rem;color:var(--gray4)}
+
+  /* BIZ CREDIT */
+  .credit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .credit-card{background:var(--white);border:1px solid var(--gray1);border-radius:var(--radius);padding:1.2rem}
+  .credit-num{font-size:2rem;font-weight:800;color:var(--gold);margin-bottom:.3rem}
+  .credit-title{font-weight:700;color:var(--navy);margin-bottom:.5rem}
+  .credit-list{list-style:none}
+  .credit-list li{padding:.35rem 0;border-bottom:1px solid var(--gray1);font-size:.83rem;color:var(--gray3);display:flex;align-items:flex-start;gap:.5rem}
+  .credit-list li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+
+  /* EMAIL GATE */
+  .email-gate{background:var(--navy);color:var(--white);border-radius:var(--radius-lg);padding:2.5rem;text-align:center;margin:2rem 0}
+  .email-gate h2{color:var(--gold);font-size:1.5rem;margin-bottom:.5rem}
+  .email-gate p{color:var(--gray2);margin-bottom:1.5rem;font-size:.9rem}
+  .email-form{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;max-width:500px;margin:0 auto}
+  .email-form input{flex:1;min-width:220px;padding:.75rem 1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--white);font-size:.9rem;font-family:inherit;outline:none}
+  .email-form input:focus{border-color:var(--gold)}
+  .email-form input::placeholder{color:rgba(255,255,255,.4)}
+  .btn-gold-lg{background:var(--gold);color:var(--navy);padding:.75rem 1.5rem;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;border:none;font-family:inherit;white-space:nowrap}
+  .btn-gold-lg:hover{background:var(--gold2)}
+  .pdf-success{display:none;background:rgba(26,122,74,.15);border:1px solid var(--green);border-radius:8px;padding:1rem;margin-top:1rem;color:#a3e6b8}
+
+  /* FOOTER */
+  footer{background:var(--navy);color:var(--gray2);text-align:center;padding:2rem;font-size:.82rem;border-top:1px solid rgba(255,255,255,.08);margin-top:4rem}
+  footer span{color:var(--gold)}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;padding:1rem}
+  .modal-overlay.open{display:flex}
+  .modal-box{background:var(--white);border-radius:var(--radius-lg);max-width:700px;width:100%;max-height:85vh;overflow-y:auto;padding:2rem;position:relative}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:var(--gray1);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+  .modal-close:hover{background:var(--gray2)}
+  .modal-title{font-size:1.3rem;font-weight:800;color:var(--navy);margin-bottom:.3rem}
+  .modal-sub{color:var(--gray3);font-size:.85rem;margin-bottom:1.5rem}
+  .modal-section{margin-bottom:1.2rem}
+  .modal-section h4{font-weight:700;color:var(--navy);margin-bottom:.5rem;font-size:.9rem;border-bottom:1px solid var(--gray1);padding-bottom:.3rem}
+  .modal-section ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+  .modal-section ul li{font-size:.85rem;color:var(--gray3);display:flex;gap:.5rem;align-items:flex-start}
+  .modal-section ul li::before{content:'→';color:var(--gold);flex-shrink:0}
+
+  /* TABS */
+  .tab-bar{display:flex;gap:0;border-bottom:2px solid var(--gray1);margin-bottom:2rem}
+  .tab{padding:.65rem 1.2rem;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--gray3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap}
+  .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  /* ALERTS */
+  .alert{border-radius:8px;padding:.9rem 1.1rem;font-size:.85rem;margin-bottom:1rem}
+  .alert.info{background:rgba(26,95,165,.08);border-left:3px solid var(--blue);color:var(--blue)}
+  .alert.gold{background:rgba(201,162,39,.08);border-left:3px solid var(--gold);color:#7a5f0a}
+  .alert.green{background:rgba(26,122,74,.08);border-left:3px solid var(--green);color:var(--green)}
+
+  /* SEARCH */
+  .search-bar{position:relative;margin-bottom:1.5rem}
+  .search-bar input{width:100%;padding:.8rem 1rem .8rem 2.8rem;border:1.5px solid var(--gray1);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;color:var(--navy);background:var(--white)}
+  .search-bar input:focus{border-color:var(--gold)}
+  .search-bar::before{content:'🔍';position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.9rem}
+  
+  @media(max-width:600px){
+    .nav-links{display:none}
+    .hero{padding:3rem 1.2rem 2.5rem}
+    .section{padding:2rem 1.2rem}
+    .hero-stats{gap:1.5rem}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Biz<span>Mastery</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" onclick="showPage('setup')">Business Setup</button>
+    <button class="nav-btn" onclick="showPage('states')">All 50 States</button>
+    <button class="nav-btn" onclick="showPage('types')">Business Types</button>
+    <button class="nav-btn" onclick="showPage('govcon')">Gov Contracts</button>
+    <button class="nav-btn" onclick="showPage('credit')">Business Credit</button>
+    <button class="nav-btn" onclick="showPage('guide')">Free Guide</button>
+  </div>
+  <button class="nav-cta" onclick="showPage('guide')">📄 Free PDF Guide</button>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge">🇺🇸 Complete U.S. Business Launch System</div>
+    <h1>From <span>Zero to Mastery</span> —<br>Start Any Business in Any State</h1>
+    <p>The most complete business formation guide covering all 50 states, 100+ business types, government contracting, business credit building, and step-by-step execution plans.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="showPage('setup')">Start Your Business →</button>
+      <button class="btn-outline" onclick="showPage('guide')">Download Free PDF Guide</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">100+</div><div class="stat-lbl">Business Types</div></div>
+      <div class="stat-item"><div class="stat-num">50</div><div class="stat-lbl">States Covered</div></div>
+      <div class="stat-item"><div class="stat-num">12</div><div class="stat-lbl">Launch Phases</div></div>
+      <div class="stat-item"><div class="stat-num">$0</div><div class="stat-lbl">To Start Reading</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">What You'll Master</div>
+    <div class="gold-line"></div>
+    <div class="cards-grid">
+      <div class="card" onclick="showPage('setup')">
+        <div class="card-icon">🏛️</div>
+        <div class="card-title">Business Formation</div>
+        <div class="card-desc">LLC, Corporation, Partnership, Sole Proprietor — which structure is right for you and how to file in any state.</div>
+        <span class="card-tag">Phase 1–3</span>
+      </div>
+      <div class="card" onclick="showPage('states')">
+        <div class="card-icon">🗺️</div>
+        <div class="card-title">All 50 States Guide</div>
+        <div class="card-desc">State-specific fees, filing timelines, tax requirements, and unique regulations for every U.S. state.</div>
+        <span class="card-tag blue">50 States</span>
+      </div>
+      <div class="card" onclick="showPage('types')">
+        <div class="card-icon">💼</div>
+        <div class="card-title">100+ Business Types</div>
+        <div class="card-desc">Detailed startup guides for over 100 business categories — from food trucks to SaaS companies.</div>
+        <span class="card-tag green">Any Industry</span>
+      </div>
+      <div class="card" onclick="showPage('govcon')">
+        <div class="card-icon">🏦</div>
+        <div class="card-title">Government Contracts</div>
+        <div class="card-desc">Get SAM.gov registered, obtain certifications, and win federal, state, and local contracts.</div>
+        <span class="card-tag">$Millions Available</span>
+      </div>
+      <div class="card" onclick="showPage('credit')">
+        <div class="card-icon">💳</div>
+        <div class="card-title">Business Credit Building</div>
+        <div class="card-desc">Separate personal and business credit. Build a D-U-N-S number and secure vendor, fleet & bank credit lines.</div>
+        <span class="card-tag blue">Tier 1–4</span>
+      </div>
+      <div class="card" onclick="showPage('guide')">
+        <div class="card-icon">📚</div>
+        <div class="card-title">Free Printable Guide</div>
+        <div class="card-desc">Download the complete PDF business mastery book — all 50 states, all phases, printable and shareable.</div>
+        <span class="card-tag green">Free PDF</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="background:var(--navy);color:var(--white);max-width:100%;padding:3rem 2rem;margin:0">
+    <div style="max-width:1100px;margin:0 auto">
+      <div class="section-title" style="color:var(--gold)">You Just Got Approved in Maryland</div>
+      <div class="gold-line"></div>
+      <p style="color:var(--gray2);margin-bottom:1.5rem;max-width:680px">Congratulations! Here's exactly what happens next — in the right order — to make your business government-contract ready, credit-eligible, and fully compliant.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem">
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,162,39,.3);border-radius:10px;padding:1.1rem">
+          <div style="color:var(--gold);font-weight:800;font-size:1.4rem;margin-bottom:.3rem">01</div>
+          <div style="font-weight:700;margin-bottom:.3rem">Get EIN from IRS</div>
+          <div style="font-size:.82rem;color:var(--gray2)">Free, takes 5 min online at IRS.gov. Required for everything.</div>
+        </div>
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,162,39,.3);border-radius:10px;padding:1.1rem">
+          <div style="color:var(--gold);font-weight:800;font-size:1.4rem;margin-bottom:.3rem">02</div>
+          <div style="font-weight:700;margin-bottom:.3rem">Open Business Bank Account</div>
+          <div style="font-size:.82rem;color:var(--gray2)">Separate finances immediately. Chase, Bank of America, or local credit union.</div>
+        </div>
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,162,39,.3);border-radius:10px;padding:1.1rem">
+          <div style="color:var(--gold);font-weight:800;font-size:1.4rem;margin-bottom:.3rem">03</div>
+          <div style="font-weight:700;margin-bottom:.3rem">Register with SAM.gov</div>
+          <div style="font-size:.82rem;color:var(--gray2)">System for Award Management — mandatory for all federal contracts.</div>
+        </div>
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,162,39,.3);border-radius:10px;padding:1.1rem">
+          <div style="color:var(--gold);font-weight:800;font-size:1.4rem;margin-bottom:.3rem">04</div>
+          <div style="font-weight:700;margin-bottom:.3rem">Get DUNS / UEI Number</div>
+          <div style="font-size:.82rem;color:var(--gray2)">Unique Entity ID — replaces DUNS. Assigned via SAM.gov registration.</div>
+        </div>
+      </div>
+      <button class="btn-gold" style="margin-top:1.5rem" onclick="showPage('setup')">See All 12 Phases →</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUSINESS SETUP PAGE -->
+<div class="page" id="page-setup">
+  <div style="background:var(--navy);padding:2.5rem 2rem;color:var(--white)">
+    <div style="max-width:1100px;margin:0 auto">
+      <div class="hero-badge">Complete Roadmap</div>
+      <h1 style="font-size:1.9rem;font-weight:800;color:var(--white);margin:.8rem 0 .5rem">Business Formation — <span style="color:var(--gold)">All 12 Phases</span></h1>
+      <p style="color:var(--gray2);max-width:600px">Step-by-step from entity formation to winning government contracts and building business credit. No steps skipped.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="alert gold">💡 <strong>Maryland Note:</strong> Your state fee is $100 for LLC. Annual reports are due April 15 each year. Maryland has a personal property tax on business assets — file Form 1 by April 15.</div>
+
+    <div id="phases"></div>
+  </div>
+</div>
+
+<!-- 50 STATES PAGE -->
+<div class="page" id="page-states">
+  <div style="background:var(--navy);padding:2.5rem 2rem;color:var(--white)">
+    <div style="max-width:1100px;margin:0 auto">
+      <h1 style="font-size:1.9rem;font-weight:800;color:var(--white);margin-bottom:.5rem">All 50 States — <span style="color:var(--gold)">Business Requirements</span></h1>
+      <p style="color:var(--gray2)">Select your state to see filing fees, timelines, taxes, and unique requirements.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="state-selector">
+      <label>Select Your State</label>
+      <select id="stateSelect" onchange="showStateInfo()">
+        <option value="">-- Choose a State --</option>
+      </select>
+      <div class="state-info" id="stateInfo"></div>
+    </div>
+
+    <div class="section-title">State Comparison Highlights</div>
+    <div class="gold-line"></div>
+    <div class="alert info">📊 The 5 most business-friendly states by formation cost, taxes, and regulation: <strong>Wyoming, Nevada, Delaware, South Dakota, Texas</strong></div>
+    <div class="cards-grid" id="stateHighlights"></div>
+  </div>
+</div>
+
+<!-- BUSINESS TYPES PAGE -->
+<div class="page" id="page-types">
+  <div style="background:var(--navy);padding:2.5rem 2rem;color:var(--white)">
+    <div style="max-width:1100px;margin:0 auto">
+      <h1 style="font-size:1.9rem;font-weight:800;color:var(--white);margin-bottom:.5rem">100+ Business Types — <span style="color:var(--gold)">Start Any Business</span></h1>
+      <p style="color:var(--gray2)">Browse every major business type with startup requirements, income potential, and step-by-step launch guides.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="search-bar"><input type="text" id="bizSearch" placeholder="Search business types..." oninput="filterBiz()"></div>
+    <div class="biz-filter" id="bizFilter"></div>
+    <div class="biz-grid" id="bizGrid"></div>
+  </div>
+</div>
+
+<!-- GOV CONTRACTS PAGE -->
+<div class="page" id="page-govcon">
+  <div style="background:var(--navy);padding:2.5rem 2rem;color:var(--white)">
+    <div style="max-width:1100px;margin:0 auto">
+      <h1 style="font-size:1.9rem;font-weight:800;color:var(--white);margin-bottom:.5rem">Government Contracts — <span style="color:var(--gold)">Complete Roadmap</span></h1>
+      <p style="color:var(--gray2)">The federal government spends $650+ billion annually on contracts. Here's exactly how to get your share.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="alert green">✅ <strong>Maryland Advantage:</strong> Maryland has strong MBE (Minority Business Enterprise) programs and is home to major federal agencies including NSA, SSA, and NIH — creating massive local contracting opportunities.</div>
+    
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab(this,'govcon','federal')">Federal Contracts</div>
+      <div class="tab" onclick="switchTab(this,'govcon','state')">State Contracts</div>
+      <div class="tab" onclick="switchTab(this,'govcon','certs')">Certifications</div>
+      <div class="tab" onclick="switchTab(this,'govcon','find')">Finding Contracts</div>
+    </div>
+    <div class="tab-panel active" id="govcon-federal" style="padding:0">
+      <div class="roadmap" id="federalRoadmap"></div>
+    </div>
+    <div class="tab-panel" id="govcon-state">
+      <div class="roadmap" id="stateContractRoadmap"></div>
+    </div>
+    <div class="tab-panel" id="govcon-certs">
+      <div id="certsContent"></div>
+    </div>
+    <div class="tab-panel" id="govcon-find">
+      <div id="findContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BUSINESS CREDIT PAGE -->
+<div class="page" id="page-credit">
+  <div style="background:var(--navy);padding:2.5rem 2rem;color:var(--white)">
+    <div style="max-width:1100px;margin:0 auto">
+      <h1 style="font-size:1.9rem;font-weight:800;color:var(--white);margin-bottom:.5rem">Business Credit — <span style="color:var(--gold)">Build from Zero</span></h1>
+      <p style="color:var(--gray2)">Build a business credit profile completely separate from your personal credit — in 4 tiers.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="alert gold">⚠️ <strong>Critical:</strong> Never mix personal and business finances. Use your EIN (not SSN) for all business applications. Start with Tier 1 vendors immediately after opening your business bank account.</div>
+    <div class="credit-grid" id="creditGrid"></div>
+  </div>
+</div>
+
+<!-- GUIDE PAGE -->
+<div class="page" id="page-guide">
+  <div style="background:var(--navy);padding:2.5rem 2rem;color:var(--white)">
+    <div style="max-width:1100px;margin:0 auto">
+      <h1 style="font-size:1.9rem;font-weight:800;color:var(--white);margin-bottom:.5rem">📚 Free Business Mastery <span style="color:var(--gold)">PDF Guide</span></h1>
+      <p style="color:var(--gray2)">Download the complete printable guide covering all 50 states, 100+ business types, government contracting, and business credit.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="email-gate">
+      <h2>📥 Get Your Free Complete Guide</h2>
+      <p>Enter your email below to download the full Business Zero to Mastery PDF — everything in one printable guide. No spam, ever.</p>
+      <div class="email-form">
+        <input type="email" id="emailInput" placeholder="your@email.com">
+        <button class="btn-gold-lg" onclick="handleEmailSubmit()">Get Free PDF →</button>
+      </div>
+      <div class="pdf-success" id="pdfSuccess">
+        ✅ <strong>Check your email!</strong> Your PDF guide is on the way. While you wait, explore the guides above.
+        <br><br><button class="btn-gold-lg" onclick="downloadPDFSample()" style="margin-top:.5rem">⬇️ Download Sample PDF Now</button>
+      </div>
+    </div>
+
+    <div class="section-title">What's Inside the Guide</div>
+    <div class="gold-line"></div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-icon">📋</div><div class="card-title">Complete Maryland Formation Guide</div><div class="card-desc">Every step from day 1 — EIN, bank account, registered agent, licenses, and compliance calendar.</div></div>
+      <div class="card"><div class="card-icon">🗺️</div><div class="card-title">All 50 State Checklists</div><div class="card-desc">Printable checklist for every state with fees, deadlines, and unique requirements.</div></div>
+      <div class="card"><div class="card-icon">🏦</div><div class="card-title">Government Contracts Playbook</div><div class="card-desc">SAM.gov walkthrough, certification guide, and script templates for bid responses.</div></div>
+      <div class="card"><div class="card-icon">💳</div><div class="card-title">Business Credit Blueprint</div><div class="card-desc">Vendor list, credit application order, and timeline to hit Tier 4 credit lines.</div></div>
+      <div class="card"><div class="card-icon">💼</div><div class="card-title">100+ Business Type Profiles</div><div class="card-desc">Every business type with licenses needed, startup costs, and revenue projections.</div></div>
+      <div class="card"><div class="card-icon">📊</div><div class="card-title">Financial & Tax Templates</div><div class="card-desc">Quarterly tax checklists, bookkeeping setup guide, and chart of accounts templates.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<footer>
+  <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.4rem">BizMastery</div>
+  <div>The Complete U.S. Business Launch System — All 50 States · 100+ Business Types</div>
+  <div style="margin-top:.5rem;color:rgba(255,255,255,.3)">This guide is for informational purposes. Consult a licensed attorney or CPA for your specific situation.</div>
+</footer>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const PHASES = [
+  {
+    title:"Phase 1 — Legal Foundation & Entity Formation",
+    steps:[
+      {title:"Obtain Your EIN (Employer Identification Number)",desc:"Apply at IRS.gov/EIN — it's free and takes 5 minutes online. This is your business's Social Security Number. You need it before opening a bank account, hiring, or filing taxes.",resources:["IRS.gov/EIN","Free — IRS"],tip:"Maryland example: After your LLC is approved by SDAT, immediately go to IRS.gov to get your EIN. Select 'Limited Liability Company' and input your Maryland state. Download and save the EIN confirmation letter (CP 575) — banks require the original."},
+      {title:"Open a Dedicated Business Bank Account",desc:"Never mix personal and business money. Use your EIN (not SSN), LLC articles, and operating agreement to open the account. This protects your liability shield and is required for gov contracts.",resources:["Chase Business","Bank of America Business","Local Credit Unions"],tip:"Recommended for new LLCs: Chase Business Complete Banking ($15/mo, waived with $2k balance) or BlueVine (free, online, great for small businesses). Bring: EIN letter, LLC articles, government ID, and $100 minimum deposit."},
+      {title:"Hire a Registered Agent (if not already)",desc:"Maryland requires a registered agent with a physical MD address. Can be yourself, a member, or a service. Registered agents receive legal documents and state notices.",resources:["Northwest Registered Agent ($125/yr)","ZenBusiness ($99/yr)","Registered Agents Inc"],tip:"Maryland tip: If you listed yourself as registered agent, your home address becomes public record. For privacy, use a service like Northwest Registered Agent for $125/year — they give you a Maryland address and forward all documents."},
+      {title:"Draft or Formalize Your Operating Agreement",desc:"Even for single-member LLCs, this is critical. It documents ownership, profit sharing, decision-making, and member roles. Banks and government agencies often require it.",resources:["LegalZoom ($99)","Rocket Lawyer","Self-Draft Template"],tip:"Single-member Maryland LLC: Your operating agreement should include: (1) member name and % ownership, (2) how profits/losses are allocated, (3) dissolution procedure, (4) banking authorization clause. This document is what lets you open accounts and sign contracts."},
+      {title:"Get Maryland Business License (if required by industry)",desc:"Maryland requires specific licenses by county and industry. General trading licenses cost $15-$150. Food, construction, childcare, and professional services have separate state licenses.",resources:["Maryland Business License at Maryland.gov","Local County Clerk Office"],tip:"Check the Maryland OneStop portal (onestop.md.gov) — it shows every license you need based on your business type and county. Most service businesses in Prince George's or Charles County need a county business license plus any professional state license."}
+    ]
+  },
+  {
+    title:"Phase 2 — Financial Infrastructure",
+    steps:[
+      {title:"Set Up Business Accounting Software",desc:"Start tracking immediately. QuickBooks Self-Employed or Wave (free) are great starting points. Categorize every expense from day one for maximum tax deductions.",resources:["Wave Accounting (Free)","QuickBooks Simple Start ($30/mo)","FreshBooks ($17/mo)"],tip:"Critical: set up these categories from day 1 — Office supplies, Travel, Marketing, Professional fees, Equipment, Home office (if applicable), Meals (50% deductible). In Maryland, keep receipts for ALL purchases over $25."},
+      {title:"Open a Business Credit Card (Secured if Needed)",desc:"Apply using your EIN. Start with a secured business card ($200-$500 deposit) if you have no business credit history. This begins building your business credit profile.",resources:["Capital One Spark ($0 annual fee)","Wells Fargo Business Secured","Brex (no personal guarantee)"],tip:"Best strategy: Apply for a Capital One Spark Cash Select for Business — no annual fee, 1.5% cash back, reports to Dun & Bradstreet and Experian Business. Use it only for business purchases and pay in full monthly. Your business credit score begins building within 90 days."},
+      {title:"Get a DUNS/UEI Number (for Gov Contracts)",desc:"The Unique Entity Identifier replaced DUNS in 2022. You get it automatically when registering at SAM.gov. Required for ALL federal contracts and most state contracts.",resources:["SAM.gov (free registration)"],tip:"Go to SAM.gov and click 'Register Entity'. Have ready: EIN, NAICS codes for your business, banking info for electronic payments, and your business address. Registration takes 7-10 business days to activate. Do this NOW — before you need it."},
+      {title:"Set Up Payroll System (Even if Just for Yourself)",desc:"If you elect S-Corp taxation or hire employees, you need payroll. Even as a solo LLC, setting up payroll software positions you for growth and proper tax handling.",resources:["Gusto ($40/mo)","ADP Run","QuickBooks Payroll"],tip:"Maryland payroll requirements: register with Maryland's Employer Withholding at marylandtaxes.gov. New employer SUTA rate is 2.3% on first $8,500 of wages. File quarterly MW-506 withholding returns."},
+      {title:"Understand Maryland Tax Obligations",desc:"Maryland has state income tax (2-5.75%), county income tax (2.25-3.2%), sales & use tax (6%), and personal property tax on business assets. Register for all applicable taxes.",resources:["Maryland Tax Connect (marylandtaxes.gov)","Maryland Annual Report (SDAT)"],tip:"Maryland annual report is due April 15, costs $300 for LLCs. Personal property return (Form 1) is also due April 15 — list all equipment, furniture, computers. Missing these means losing your Good Standing status, which blocks government contracts."}
+    ]
+  },
+  {
+    title:"Phase 3 — Branding & Business Presence",
+    steps:[
+      {title:"Register Your Business Name / DBA",desc:"If operating under a name different from your LLC name, file a DBA (Doing Business As) — called a 'Trade Name' in Maryland. Cost is $25 at SDAT.",resources:["Maryland SDAT (dat.maryland.gov)"],tip:"Example: Your LLC is 'Smith Holdings LLC' but you do business as 'Smith Cleaning Services.' File a trade name for 'Smith Cleaning Services' at SDAT for $25. Your bank account can then be under 'Smith Cleaning Services DBA Smith Holdings LLC.'"},
+      {title:"Build Your Professional Website",desc:"A professional website is required for government contracts (shows legitimacy), business credit applications, and customer trust. Minimum: homepage, services page, about, contact.",resources:["Squarespace ($16/mo)","WordPress + Hostinger ($3/mo)","Wix ($17/mo)"],tip:"For gov contracts your website needs: (1) business name matching your SAM.gov registration, (2) physical address (PO Box not accepted), (3) phone number, (4) list of services/products, (5) 'About Us' with founding date. Contracting officers verify websites."},
+      {title:"Get a Professional Business Phone Number",desc:"A dedicated business number separates you professionally and is required on license applications, bank accounts, and government registrations.",resources:["Google Voice (Free)","RingCentral ($30/mo)","Grasshopper ($26/mo)"],tip:"Google Voice is free and gives you a real phone number. Forward it to your cell. For government contracts, use this number consistently across SAM.gov, your website, and all applications — inconsistencies can flag your account."},
+      {title:"Create Professional Business Email",desc:"Use your domain email (yourname@yourbusiness.com), never Gmail/Yahoo for formal correspondence. Required by many government agencies.",resources:["Google Workspace ($6/user/mo)","Microsoft 365 Business ($6/mo)"],tip:"Setup Google Workspace with your domain. Create: info@yourbusiness.com (general), contracts@yourbusiness.com (for bids), and yourname@yourbusiness.com. Government RFP submissions MUST come from a domain email."}
+    ]
+  },
+  {
+    title:"Phase 4 — Compliance & Insurance",
+    steps:[
+      {title:"Get Business Insurance",desc:"General Liability insurance is required by many clients, all government contracts, and protects your personal assets. E&O (Errors & Omissions) needed for professional services.",resources:["NEXT Insurance (online, fast)","Hiscox Business Insurance","The Hartford"],tip:"Minimum coverage: $1M General Liability policy ($400-800/year for most businesses). Government contracts often require $2M aggregate. Get a Certificate of Insurance (COI) — you'll need to provide it for every contract. Next Insurance gives same-day COI."},
+      {title:"Open a Business PO Box or Virtual Address",desc:"For privacy, government registrations, and receiving official mail. Required if you work from home and don't want your home address public.",resources:["USPS PO Box ($50-180/year)","iPostal1 Virtual Address ($10/mo)","Anytime Mailbox ($10/mo)"],tip:"For Maryland DBE/MBE certification and federal SAM.gov, use a consistent address everywhere. A virtual address service like iPostal1 gives you a real street address (not PO Box) which is required for SAM.gov registration."},
+      {title:"File Maryland Annual Report & Personal Property Return",desc:"Due April 15 each year. Annual report costs $300 for LLCs. Personal property return (Form 1) is free to file but required.",resources:["Maryland SDAT Annual Report Portal","Maryland Business Express"],tip:"Set a calendar reminder for March 1 each year. If you miss April 15, you're assessed a $30 late fee plus 1.5% monthly interest. After 2 missed years, your LLC can be forfeited — which disqualifies you from all state contracts."},
+      {title:"Maintain Corporate Formalities",desc:"Hold annual meetings (even as a solo owner), keep minutes, maintain separation of finances. This protects your limited liability and is required for government certification.",resources:["Meeting Minutes Template","Operating Agreement Updates"],tip:"Create a simple 'Annual Meeting Minutes' document each year noting your business decisions: retained earnings, salary decisions, any changes to operations. Date it, sign it, keep it in your business records folder. This is your legal shield."}
+    ]
+  },
+  {
+    title:"Phase 5 — Government Contract Registration",
+    steps:[
+      {title:"Register on SAM.gov (System for Award Management)",desc:"MANDATORY for all federal contracts. Free registration. Takes 7-10 business days. Must be renewed annually. This is your gateway to $650+ billion in federal spending.",resources:["SAM.gov","login.gov (required for access)"],tip:"SAM.gov process: (1) Create login.gov account, (2) Go to SAM.gov and click 'Register Entity', (3) Enter your UEI/EIN, (4) Select your NAICS codes (your industry codes), (5) Complete all sections, (6) Submit for activation. Have your banking info ready for electronic payments setup."},
+      {title:"Select Your NAICS Codes",desc:"North American Industry Classification System codes define what your business does. Choose the PRIMARY code that matches your core service, plus secondary codes for additional services.",resources:["NAICS Code Lookup at census.gov","SAM.gov Entity Registration"],tip:"Examples: Consulting = 541611 | IT Services = 541512 | Construction = 236220 | Cleaning = 561720 | Staffing = 561330 | Food Service = 722310 | Transportation = 484110. You can have multiple NAICS codes. Choose codes that match work you can actually perform."},
+      {title:"Register on Maryland eMaryland Marketplace (eMMA)",desc:"Maryland's state procurement portal. Free registration. Required for all state and county contracts. Separate from SAM.gov.",resources:["eMMA at emmd.maryland.gov"],tip:"eMMA is where Maryland state agencies post solicitations. Register under the same business name as your SDAT filing. Complete your vendor profile 100% — agencies search the database for vendors. Add all categories that apply to your business."},
+      {title:"Research County-Level Procurement",desc:"Maryland's 23 counties and Baltimore City each have their own procurement offices. Register with your county (Prince George's, Charles, etc.) for local contracts.",resources:["Prince George's County Procurement (pgcps.org)","Charles County Government","Maryland Association of Counties"],tip:"Charles County procurement: procurement.charlescountymd.gov — register as a vendor and set up bid notifications. Prince George's County: smallest contracts (under $5k) are 'small purchase' orders — perfect for new businesses."}
+    ]
+  },
+  {
+    title:"Phase 6 — Certifications for Competitive Advantage",
+    steps:[
+      {title:"MBE — Minority Business Enterprise Certification",desc:"Maryland's MBE program sets-aside contracts specifically for minority and women-owned businesses. Certified MBEs get preference in state and local contracts.",resources:["Maryland GOMA (Governor's Office of Minority Affairs)","mdot.maryland.gov/MBE"],tip:"Maryland MBE process: (1) Apply at mdot.maryland.gov, (2) Submit: 3 years tax returns, business license, articles, operating agreement, bank statements, owner's personal financial statement, (3) Site visit may be required, (4) Approval takes 45-90 days. Annual certification renewal required."},
+      {title:"SBA Small Business Certification",desc:"Federal small business certifications give you set-aside access for contracts reserved for small, 8(a), HUBZone, WOSB, or VOSB businesses. Free to apply.",resources:["certify.SBA.gov","SBA.gov/contracting"],tip:"Key SBA certifications: 8(a) Business Development (for socially/economically disadvantaged), HUBZone (for businesses in historically underutilized zones — check your zip at sba.gov/hubzone), WOSB (Women-Owned Small Business), SDVOSB (Service-Disabled Veteran). Each has set-aside contracts you can ONLY compete for with that certification."},
+      {title:"DBE — Disadvantaged Business Enterprise",desc:"For federally-funded transportation, highway, and infrastructure projects. Administered by MDOT. Separate from MBE but can be applied simultaneously.",resources:["MDOT DBE Program","Federal Highway Administration"],tip:"Maryland DBE is managed by MDOT and follows USDOT rules. If your business does ANY work on federally-funded roads, bridges, airports, or transit — you want DBE certification. Apply simultaneously with MBE — much of the paperwork overlaps."},
+      {title:"ISO Certifications (for Larger Contracts)",desc:"ISO 9001 (Quality Management) is often required for defense and large government contracts. ISO 27001 (Information Security) required for IT contracts handling government data.",resources:["American National Standards Institute","NSF International Certification"],tip:"Start with ISO 9001 if you're pursuing contracts over $500k. Cost: $5,000-$15,000 for initial certification. Many contracts list it as 'preferred' but not required early on. Add to your pipeline 6-12 months into contracting."}
+    ]
+  },
+  {
+    title:"Phase 7 — Business Credit Building (Tiers 1–4)",
+    steps:[
+      {title:"Tier 1 — Establish Business Credit File",desc:"Open accounts with 'net-30' vendors that report to business credit bureaus. These don't require a credit check. Pay in full within 30 days to build payment history.",resources:["Uline.com","Quill.com","Grainger.com","Summa Office Supplies"],tip:"Start with: (1) Uline — order shipping supplies on net-30 terms, pay early, (2) Quill — order office supplies, net-30, reports to Dun & Bradstreet, (3) Grainger — industrial supplies, net-30, reports to Experian Business. After 90 days of on-time payments, your D&B Paydex score will be established."},
+      {title:"Tier 2 — Retail Business Credit",desc:"After 3-6 months of Tier 1 accounts, apply for store credit at business-focused retailers. These report to business bureaus and don't usually require personal guarantee for small limits.",resources:["Home Depot Business Account","Staples Business Credit","Amazon Business Credit","Best Buy Business"],tip:"Apply in this order: (1) Home Depot Business — apply with EIN only, (2) Office Depot/Staples Business Credit, (3) Amazon Business Credit Line. Limits start at $500-$2,000. Use them for actual business purchases and pay in full each month."},
+      {title:"Tier 3 — Fleet & Gas Cards",desc:"Fleet cards build significant business credit and are useful for any business with vehicles. Apply after 6+ months of payment history.",resources:["WEX Fleet Card","Shell Fleet Card","Fuelman","BP Business Solutions"],tip:"WEX Fleet and Shell Fleet report to business bureaus and often approve based on business credit (not personal). If your business uses vehicles for ANY purpose — deliveries, client visits, equipment transport — get a fleet card immediately and use it for all fuel."},
+      {title:"Tier 4 — Business Lines of Credit & Bank Loans",desc:"After 12-18 months of solid business credit history, apply for business lines of credit and bank loans. These provide working capital for government contract execution.",resources:["Chase Business Line of Credit","SBA 7(a) Loans (SBA.gov)","Fundbox","BlueVine"],tip:"Target lenders in order: (1) Your own business bank (they see your deposits), (2) SBA Microloan ($50k max, great for new businesses), (3) SBA 7(a) loan up to $5M for established businesses, (4) Online lenders (Fundbox, BlueVine) for revolving credit. Government contracts often require you to have working capital to fund the contract before you get paid."}
+    ]
+  },
+  {
+    title:"Phase 8 — Finding & Winning Government Contracts",
+    steps:[
+      {title:"Research Opportunities on SAM.gov / Beta.SAM.gov",desc:"The main federal contracting database. Search by your NAICS codes, set-aside type (small business, MBE, 8(a)), and agency. Set up email alerts.",resources:["SAM.gov/search","SBIR.gov (R&D contracts)"],tip:"Daily routine: Search SAM.gov for 'Sources Sought' notices before full RFPs — agencies gauge market interest. Respond to Sources Sought notices even if you can't win the contract yet — it gets your name in front of the contracting officer and shapes the final RFP requirements."},
+      {title:"Use USASpending.gov to Research Awards",desc:"See who is winning contracts in your NAICS code, how much, and from which agencies. This intelligence helps you target your proposals.",resources:["USASpending.gov","FPDS.gov (Federal Procurement Data System)"],tip:"Search your NAICS code on USASpending.gov and look at the last 2 years of awards. Identify: (1) Which agencies buy your service most, (2) Average contract size, (3) Who your competition is, (4) Which set-asides are used most. Build your strategy around this data."},
+      {title:"Write Your Capabilities Statement",desc:"A 1-2 page document that is your business's resume for government contracting. Every contracting officer will ask for one. Must be polished and professional.",resources:["SBA Capability Statement Template","SCORE Mentors (free)"],tip:"Your capabilities statement must include: (1) Company overview (founded, location, employees), (2) Core competencies (what you do best), (3) Past performance (even private sector counts), (4) Differentiators (certifications, equipment, unique expertise), (5) NAICS codes, CAGE code, UEI number, contact info. Keep it to 1 page with your logo and brand colors."},
+      {title:"Attend Industry Days & Networking Events",desc:"Government agencies hold 'Industry Days' before major procurements. Attending shows interest, lets you meet contracting officers, and positions you for awards.",resources:["SBA Matchmaking Events","Maryland Procurement Technical Assistance Center (PTAC)","SCORE Maryland"],tip:"Maryland PTAC (ptac.umd.edu) offers FREE one-on-one coaching for government contractors. They review your SAM.gov profile, capabilities statement, and proposals at no cost. This service alone is worth thousands in consulting fees."}
+    ]
+  },
+  {
+    title:"Phase 9 — Scale & Protect",
+    steps:[
+      {title:"S-Corp Tax Election (if profitable)",desc:"Once your LLC nets $50,000+ annually, electing S-Corp tax status saves significant self-employment taxes. Must file Form 2553 with IRS.",resources:["IRS Form 2553","Your CPA/Tax Advisor"],tip:"Example: LLC netting $100k pays ~$15,300 in SE tax. Same income as S-Corp (paying yourself $50k salary + $50k distribution) saves approximately $7,650/year in SE taxes. File Form 2553 by March 15 to elect for current tax year. Consult your CPA first."},
+      {title:"Hire a CPA Specializing in Small Business",desc:"Government contractors have unique tax situations. A business CPA pays for themselves many times over in deductions found and compliance maintained.",resources:["AICPA Find a CPA","Maryland Society of CPAs"],tip:"Cost: $800-$3,000/year for a small business CPA. What they find: home office deductions, vehicle deductions, Section 179 equipment depreciation, retirement plan deductions (SEP-IRA up to $66k/year), health insurance deductions. ROI is typically 5-10x their fee."},
+      {title:"Build Your Subcontracting Network",desc:"Many government prime contractors are required to subcontract a percentage to small/minority businesses. Build relationships with prime contractors who need your service.",resources:["SBA SUBNet (subcontracting opportunities)","USA Procurement (prime contractor database)"],tip:"Strategy: Identify 5-10 prime contractors (large companies) in your NAICS code. Email their Small Business Liaison Officer (SBLO) with your capabilities statement and certifications. Subcontracting is often the fastest path to your first government contract — you're executing work under someone else's contract while building past performance."},
+      {title:"Build Past Performance Portfolio",desc:"Past performance is the #1 factor in most government contract evaluations. Document EVERY project — private or public — with client name, contract value, work performed, and outcome.",resources:["CPARS (Contractor Performance Assessment Reporting System)","Your own portfolio template"],tip:"Create a Past Performance Matrix spreadsheet: Project Name | Client | Contract Value | Period of Performance | Your Role | Services Provided | Outcome/Results | Reference Contact. Government proposals will ask for 3-5 relevant past performance examples. Start collecting these from private sector clients NOW."}
+    ]
+  },
+  {
+    title:"Phase 10 — Long-Term Growth",
+    steps:[
+      {title:"Graduate to 8(a) Program",desc:"The SBA's 8(a) Business Development program is a 9-year mentorship and contracting program for socially/economically disadvantaged businesses. Provides set-aside contracts and support.",resources:["SBA 8(a) Program at certify.SBA.gov"],tip:"8(a) eligibility: owned 51%+ by U.S. citizen who is socially disadvantaged (minorities, women, veterans, persons with disabilities) AND economically disadvantaged (personal net worth under $750k, adjusted gross income under $350k avg over 3 years). Apply through certify.SBA.gov."},
+      {title:"Pursue GSA Schedule (Federal Supply Schedule)",desc:"A pre-negotiated contract that allows federal agencies to buy from you directly without a formal bidding process. The fastest path to recurring government revenue.",resources:["GSA Schedules at gsa.gov/schedules","GSA eOffer System"],tip:"GSA Schedules: After 2+ years in business with $25k+ in revenue, you can apply for a GSA Schedule contract. Once awarded, agencies can buy directly from you at pre-negotiated rates. The Schedule stays active for 5 years and is renewable. Application takes 3-6 months."},
+      {title:"Build Multi-State Operations",desc:"Expand to neighboring states (Virginia, Delaware, DC) which are all within the Washington-Baltimore economic zone — one of the highest concentrations of federal spending in the nation.",resources:["Virginia SCC (business registration)","Delaware Division of Corporations","DC BEGA"],tip:"Maryland businesses can register as a 'foreign LLC' in Virginia ($100) and Delaware ($90) to legally operate there. The DC-Maryland-Virginia (DMV) region has over $150 billion in federal contracting annually — being licensed in all three states gives you a massive advantage."},
+      {title:"Establish Strategic Partnerships & Joint Ventures",desc:"Two or more small businesses can form a joint venture to pursue larger contracts that neither could handle alone. The SBA Mentor-Protégé Program formalizes these relationships.",resources:["SBA Mentor-Protégé Program","SBA Joint Venture Rules"],tip:"Example: You're a 5-person IT firm pursuing a $5M NSA contract. Partner with a larger company as their protégé through the SBA Mentor-Protégé Program. They provide bonding, past performance, and resources — you provide small business certifications and set-aside access. Both benefit."}
+    ]
+  }
+];
+
+const STATES = {
+  "Alabama":{"llcFee":236,"annualFee":100,"annualDue":"April 15","stateTax":"6.5%","salesTax":"4%","notes":"Must publish notice of formation in newspaper. Privilege tax based on net worth.","favors":"Manufacturing, Agriculture"},
+  "Alaska":{"llcFee":250,"annualFee":100,"annualDue":"Jan 2","stateTax":"0%","salesTax":"0%","notes":"No state income tax or sales tax. Biennial report every 2 years. Most business-friendly for taxes.","favors":"Resource extraction, Tourism"},
+  "Arizona":{"llcFee":50,"annualFee":0,"annualDue":"None","stateTax":"4.9%","salesTax":"5.6%","notes":"No annual report fee. Low LLC formation cost. Transaction Privilege Tax instead of traditional sales tax.","favors":"Real estate, Technology"},
+  "Arkansas":{"llcFee":45,"annualFee":150,"annualDue":"May 1","stateTax":"5.3%","salesTax":"6.5%","notes":"Annual franchise tax report required. Low formation cost.","favors":"Agriculture, Manufacturing"},
+  "California":{"llcFee":70,"annualFee":800,"annualDue":"15th day 4th month","stateTax":"8.84%","salesTax":"7.25%","notes":"HIGHEST annual franchise tax at $800 minimum. Additional fee based on gross receipts. Complex regulations. Statement of Information due every 2 years ($20).","favors":"Tech, Entertainment, Finance"},
+  "Colorado":{"llcFee":50,"annualFee":10,"annualDue":"Annually","stateTax":"4.4%","salesTax":"2.9%","notes":"Very low annual report fee. Periodic report due by end of anniversary month. Business-friendly overall.","favors":"Tech, Outdoor industry, Cannabis"},
+  "Connecticut":{"llcFee":120,"annualFee":80,"annualDue":"March 31","stateTax":"7.5%","salesTax":"6.35%","notes":"Annual report required. Business Entity Tax was repealed in 2019. High cost of living but strong economy.","favors":"Finance, Insurance, Healthcare"},
+  "Delaware":{"llcFee":90,"annualFee":300,"annualDue":"June 1","stateTax":"8.7%","salesTax":"0%","notes":"MOST POPULAR for incorporation due to flexible laws and Court of Chancery. No sales tax. Franchise tax for corps can be high. Best for seeking investors.","favors":"Holding companies, Startups seeking investment"},
+  "Florida":{"llcFee":125,"annualFee":138.75,"annualDue":"May 1","stateTax":"5.5%","salesTax":"6%","notes":"No personal income tax. Annual report required. Strong business environment. Late fee of $400 if annual report missed.","favors":"Tourism, Real estate, Healthcare, Finance"},
+  "Georgia":{"llcFee":100,"annualFee":50,"annualDue":"April 1","stateTax":"5.75%","salesTax":"4%","notes":"Annual registration required. Low annual fee. No separate state LLC tax (income passed through).","favors":"Film, Tech, Logistics, Agriculture"},
+  "Hawaii":{"llcFee":50,"annualFee":15,"annualDue":"Varies","stateTax":"6.4%","salesTax":"4%","notes":"Low annual fee but General Excise Tax (GET) applies to ALL business receipts at 4%. Higher than most states' sales taxes.","favors":"Tourism, Agriculture, Military services"},
+  "Idaho":{"llcFee":100,"annualFee":0,"annualDue":"None","stateTax":"5.8%","salesTax":"6%","notes":"No annual report fee after formation. Annual report is $0. Business-friendly environment.","favors":"Agriculture, Manufacturing, Tech (Boise)"},
+  "Illinois":{"llcFee":150,"annualFee":75,"annualDue":"Before 1st day of anniversary month","stateTax":"9.5%","salesTax":"6.25%","notes":"High corporate tax. Personal Property Replacement Tax of 1.5% for LLCs. Chicago has additional city taxes.","favors":"Finance, Agriculture, Manufacturing"},
+  "Indiana":{"llcFee":95,"annualFee":32,"annualDue":"Annually","stateTax":"4.9%","salesTax":"7%","notes":"Low flat corporate tax rate. Biennial report every 2 years actually. Business Income Tax applies to LLC only if taxed as corp.","favors":"Manufacturing, Agriculture, Logistics"},
+  "Iowa":{"llcFee":50,"annualFee":60,"annualDue":"April 1","stateTax":"8.4%","salesTax":"6%","notes":"Biennial report required. Decreasing corporate tax rate schedule in effect.","favors":"Agriculture, Insurance, Financial services"},
+  "Kansas":{"llcFee":160,"annualFee":55,"annualDue":"15th day of 4th month","stateTax":"4%","salesTax":"6.5%","notes":"Annual report required. Privilege tax applies. Small business friendly tax incentives.","favors":"Agriculture, Aviation, Energy"},
+  "Kentucky":{"llcFee":40,"annualFee":15,"annualDue":"June 30","stateTax":"5%","salesTax":"6%","notes":"Very low fees. LLC Occupational License Tax may apply in some counties. Business-friendly overall.","favors":"Manufacturing, Agriculture, Bourbon/spirits"},
+  "Louisiana":{"llcFee":100,"annualFee":35,"annualDue":"Anniversary month","stateTax":"7.5%","salesTax":"4.45%","notes":"Annual report required. Parish-level taxes and licenses also required. High overall tax burden.","favors":"Oil and gas, Tourism, Agriculture"},
+  "Maine":{"llcFee":175,"annualFee":85,"annualDue":"June 1","stateTax":"8.93%","salesTax":"5.5%","notes":"Annual report required. High income tax rates. Strong small business support programs.","favors":"Tourism, Fishing, Forestry"},
+  "Maryland":{"llcFee":100,"annualFee":300,"annualDue":"April 15","stateTax":"8.25%","salesTax":"6%","notes":"Annual report $300 for LLCs. Personal property tax return due April 15 (Form 1). County income taxes vary (2.25%–3.2%). Strong proximity to federal government.","favors":"Government contracting, Healthcare, Biotech, Cybersecurity"},
+  "Massachusetts":{"llcFee":500,"annualFee":500,"annualDue":"Annually","stateTax":"8%","salesTax":"6.25%","notes":"Highest LLC formation and annual fees. Annual report required. But strong innovation economy.","favors":"Biotech, Finance, Education, Tech"},
+  "Michigan":{"llcFee":50,"annualFee":25,"annualDue":"February 15","stateTax":"6%","salesTax":"6%","notes":"Low annual fee. Annual statement required. Flat corporate income tax.","favors":"Manufacturing, Auto industry, Tech"},
+  "Minnesota":{"llcFee":155,"annualFee":0,"annualDue":"Dec 31 (free)","stateTax":"9.8%","salesTax":"6.875%","notes":"Annual renewal is free. High income tax but strong social infrastructure. No LLC tax if pass-through.","favors":"Healthcare, Finance, Food & Ag"},
+  "Mississippi":{"llcFee":50,"annualFee":0,"annualDue":"April 15","stateTax":"5%","salesTax":"7%","notes":"Annual report is free. One of lowest filing fees. Low cost of business.","favors":"Agriculture, Gaming, Manufacturing"},
+  "Missouri":{"llcFee":105,"annualFee":0,"annualDue":"None","stateTax":"4%","salesTax":"4.225%","notes":"No annual report requirement for LLCs. One of the easiest states for LLC maintenance. Low taxes.","favors":"Agriculture, Defense, Finance"},
+  "Montana":{"llcFee":35,"annualFee":15,"annualDue":"April 15","stateTax":"6.75%","salesTax":"0%","notes":"No sales tax. Very low fees. Annual report required. Great for holding real estate or assets.","favors":"Tourism, Agriculture, Real estate holding"},
+  "Nebraska":{"llcFee":100,"annualFee":13,"annualDue":"April 1","stateTax":"7.25%","salesTax":"5.5%","notes":"Biennial occupation tax. Low annual fee. Occupation tax based on paid-in capital.","favors":"Agriculture, Insurance, Food processing"},
+  "Nevada":{"llcFee":75,"annualFee":200,"annualDue":"Last day of anniversary month","stateTax":"0%","salesTax":"6.85%","notes":"No corporate or personal income tax. Strong privacy protections — no public disclosure of members. Commerce Tax applies to large businesses only. Second most popular after Delaware.","favors":"Gaming, Tourism, Real estate, Holding companies"},
+  "New Hampshire":{"llcFee":100,"annualFee":100,"annualDue":"April 1","stateTax":"7.5%","salesTax":"0%","notes":"No sales tax or income tax on wages. Business Profits Tax and Business Enterprise Tax apply. Strong business environment.","favors":"Finance, Manufacturing, Tourism"},
+  "New Jersey":{"llcFee":125,"annualFee":75,"annualDue":"Annually","stateTax":"9%","salesTax":"6.625%","notes":"Annual report required. High overall tax burden. CBT minimum $500 for corps. High cost of doing business but access to large market.","favors":"Pharmaceuticals, Finance, Distribution"},
+  "New Mexico":{"llcFee":50,"annualFee":0,"annualDue":"None","stateTax":"5.9%","salesTax":"5%","notes":"No annual report for LLCs. Very low maintenance cost. Gross Receipts Tax instead of sales tax.","favors":"Oil and gas, Government contracting, Tourism"},
+  "New York":{"llcFee":200,"annualFee":9,"annualDue":"Biennial","stateTax":"6.5%","salesTax":"4%","notes":"PUBLICATION REQUIREMENT: Must publish notice in two newspapers for 6 weeks ($1,000-$2,000 cost). Annual fee is only $9 but publication is expensive. NYC adds city taxes.","favors":"Finance, Media, Fashion, Tech"},
+  "North Carolina":{"llcFee":125,"annualFee":200,"annualDue":"April 15","stateTax":"2.5%","salesTax":"4.75%","notes":"Low and decreasing corporate tax rate (2.5% in 2025, trending to 0%). Annual report required. Strong economic growth.","favors":"Finance, Pharma, Research (Research Triangle), Manufacturing"},
+  "North Dakota":{"llcFee":135,"annualFee":50,"annualDue":"Nov 15","stateTax":"4.31%","salesTax":"5%","notes":"Annual report required. Low population but favorable tax environment for certain industries.","favors":"Agriculture, Oil and gas, Manufacturing"},
+  "Ohio":{"llcFee":99,"annualFee":0,"annualDue":"None","stateTax":"0%","salesTax":"5.75%","notes":"No corporate income tax. Commercial Activity Tax (CAT) based on gross receipts. No annual report for LLCs.","favors":"Manufacturing, Healthcare, Financial services"},
+  "Oklahoma":{"llcFee":104,"annualFee":25,"annualDue":"Anniversary month","stateTax":"4%","salesTax":"4.5%","notes":"Annual certificate of compliance required. Low overall taxes. Oil and gas incentives.","favors":"Oil and gas, Agriculture, Aerospace"},
+  "Oregon":{"llcFee":100,"annualFee":100,"annualDue":"Anniversary month","stateTax":"6.6%","salesTax":"0%","notes":"No sales tax. Annual report required. Corporate Activity Tax (CAT) for businesses over $1M gross receipts.","favors":"Tech (Portland), Agriculture, Outdoor industry"},
+  "Pennsylvania":{"llcFee":125,"annualFee":7,"annualDue":"None (Decennial Report every 10 years)","stateTax":"9.99%","salesTax":"6%","notes":"High corporate tax rate (one of highest). Decennial (10-year) report required. Capital Stock Tax being phased out.","favors":"Healthcare, Finance, Manufacturing"},
+  "Rhode Island":{"llcFee":150,"annualFee":50,"annualDue":"Nov 1","stateTax":"7%","salesTax":"7%","notes":"Annual report required. Small state with high tax rates. Strong coastal economy.","favors":"Finance, Tourism, Education"},
+  "South Carolina":{"llcFee":110,"annualFee":0,"annualDue":"None","stateTax":"5%","salesTax":"6%","notes":"No annual report for LLCs. Low maintenance cost. License Tax based on paid-in capital applies.","favors":"Manufacturing, Tourism, Agriculture"},
+  "South Dakota":{"llcFee":150,"annualFee":50,"annualDue":"Anniversary month","stateTax":"0%","salesTax":"4.5%","notes":"No corporate or personal income tax. Strong privacy laws. Annual report required. Very business-friendly.","favors":"Finance, Trust companies, Ranching"},
+  "Tennessee":{"llcFee":300,"annualFee":300,"annualDue":"April 1","stateTax":"6.5%","salesTax":"7%","notes":"High LLC fees but no income tax on wages (only investment income). Annual report required. Franchise & Excise Tax applies.","favors":"Healthcare, Finance, Manufacturing, Distribution"},
+  "Texas":{"llcFee":300,"annualFee":0,"annualDue":"May 15 (franchise tax report)","stateTax":"0%","salesTax":"6.25%","notes":"No personal income tax. Franchise Tax applies to businesses over $1.23M in gross receipts (0.375% or 0.75%). No annual report fee but franchise tax report required. Strong economy.","favors":"Oil and gas, Tech (Austin), Real estate, Healthcare"},
+  "Utah":{"llcFee":70,"annualFee":18,"annualDue":"Anniversary month","stateTax":"4.85%","salesTax":"4.85%","notes":"Very low annual fee. Annual renewal required. Low flat tax rate. Business-friendly environment.","favors":"Tech (Silicon Slopes), Outdoor industry, Financial services"},
+  "Vermont":{"llcFee":125,"annualFee":35,"annualDue":"March 15","stateTax":"8.5%","salesTax":"6%","notes":"Annual report required. High personal income tax. Small but innovation-focused economy.","favors":"Tourism, Agriculture, Renewable energy"},
+  "Virginia":{"llcFee":100,"annualFee":50,"annualDue":"Last day of 12th month after formation","stateTax":"6%","salesTax":"4.3%","notes":"Annual registration fee required. Strong federal contracting market (proximity to DC/Pentagon). No franchise tax on LLCs.","favors":"Defense, IT, Government contracting, Finance"},
+  "Washington":{"llcFee":180,"annualFee":60,"annualDue":"Anniversary month","stateTax":"0%","salesTax":"6.5%","notes":"No personal or corporate income tax. Business & Occupation (B&O) Tax on gross receipts. Annual report required.","favors":"Tech (Seattle), Aerospace, Agriculture"},
+  "West Virginia":{"llcFee":100,"annualFee":25,"annualDue":"June 30","stateTax":"6.5%","salesTax":"6%","notes":"Annual report required. Low annual fee. Business & Occupation Tax applies to certain activities.","favors":"Energy, Mining, Tourism"},
+  "Wisconsin":{"llcFee":130,"annualFee":25,"annualDue":"Quarterly (March 31, June 30, Sep 30, Dec 31)","stateTax":"7.9%","salesTax":"5%","notes":"Annual report required but can be filed quarterly. Economic development programs available. Manufacturing & Agriculture credit available.","favors":"Manufacturing, Agriculture, Healthcare"},
+  "Wyoming":{"llcFee":100,"annualFee":52,"annualDue":"First day of anniversary month","stateTax":"0%","salesTax":"4%","notes":"No corporate or personal income tax. Strong privacy protections — one of best states for holding companies. Annual report required. Very low fees overall. Top choice for asset protection.","favors":"Energy, Agriculture, Holding companies, Privacy-focused businesses"}
+};
+
+const BIZ_TYPES = [
+  {name:"LLC / Consulting Firm",emoji:"🏢",cat:"Professional Services",summary:"Offer expertise-based services to businesses or individuals. Low overhead, high margins.",startup:"$500–$3k",income:"$50k–$300k/yr",diff:"Low",tags:["Service","B2B"]},
+  {name:"Digital Marketing Agency",emoji:"📱",cat:"Marketing",summary:"Help businesses grow online through SEO, social media, paid ads, and content.",startup:"$1k–$5k",income:"$80k–$500k/yr",diff:"Medium",tags:["Service","B2B","Remote"]},
+  {name:"Government Contracting Business",emoji:"🏛️",cat:"Government",summary:"Provide services or products to federal, state, or local government agencies.",startup:"$2k–$10k",income:"$100k–$10M+",diff:"High",tags:["B2G","High Revenue"]},
+  {name:"Real Estate Investment",emoji:"🏠",cat:"Real Estate",summary:"Buy, rent, or flip residential and commercial properties for income.",startup:"$10k–$100k+",income:"$30k–$1M+/yr",diff:"Medium",tags:["Passive","Asset-based"]},
+  {name:"E-commerce Store",emoji:"🛒",cat:"Retail",summary:"Sell physical or digital products online through Shopify, Amazon, or your own store.",startup:"$500–$5k",income:"$20k–$500k/yr",diff:"Medium",tags:["Product","Online"]},
+  {name:"Amazon FBA Business",emoji:"📦",cat:"Retail",summary:"Source products and sell through Amazon's fulfillment network.",startup:"$2k–$10k",income:"$30k–$300k/yr",diff:"Medium",tags:["Product","Passive"]},
+  {name:"Cleaning Company",emoji:"🧹",cat:"Home Services",summary:"Residential or commercial cleaning services. Recurring revenue model.",startup:"$1k–$5k",income:"$40k–$200k/yr",diff:"Low",tags:["Local","Recurring"]},
+  {name:"Landscaping & Lawn Care",emoji:"🌿",cat:"Home Services",summary:"Grass cutting, landscaping design, hardscaping, snow removal.",startup:"$2k–$15k",income:"$40k–$250k/yr",diff:"Low",tags:["Local","Seasonal"]},
+  {name:"Food Truck",emoji:"🚚",cat:"Food & Beverage",summary:"Mobile food business serving events, festivals, and regular spots.",startup:"$30k–$100k",income:"$50k–$200k/yr",diff:"Medium",tags:["Food","Mobile"]},
+  {name:"Restaurant",emoji:"🍽️",cat:"Food & Beverage",summary:"Brick-and-mortar dining establishment. High risk, high reward.",startup:"$150k–$750k",income:"$100k–$1M+",diff:"High",tags:["Food","Local"]},
+  {name:"Catering Business",emoji:"👨‍🍳",cat:"Food & Beverage",summary:"Provide food service for events, weddings, corporate functions.",startup:"$5k–$25k",income:"$40k–$200k/yr",diff:"Medium",tags:["Food","Events"]},
+  {name:"Personal Training / Fitness",emoji:"💪",cat:"Health & Wellness",summary:"One-on-one or group fitness coaching in person or online.",startup:"$1k–$5k",income:"$40k–$150k/yr",diff:"Low",tags:["Service","Health"]},
+  {name:"Home Health Care Agency",emoji:"🏥",cat:"Healthcare",summary:"Provide non-medical or skilled nursing home care for elderly or disabled individuals.",startup:"$10k–$40k",income:"$100k–$1M+",diff:"High",tags:["Service","License Required"]},
+  {name:"Staffing Agency",emoji:"👥",cat:"Professional Services",summary:"Connect businesses with temporary or permanent workers. Collect placement fees.",startup:"$5k–$20k",income:"$100k–$5M",diff:"Medium",tags:["B2B","High Revenue"]},
+  {name:"IT Support & Managed Services",emoji:"💻",cat:"Technology",summary:"Provide technical support, network management, and cybersecurity for businesses.",startup:"$2k–$10k",income:"$80k–$500k/yr",diff:"Medium",tags:["Tech","B2B","Recurring"]},
+  {name:"Software Development",emoji:"⌨️",cat:"Technology",summary:"Build custom software, apps, or web applications for clients or as SaaS products.",startup:"$1k–$10k",income:"$80k–$500k+/yr",diff:"High",tags:["Tech","High Value"]},
+  {name:"YouTube Automation Channel",emoji:"▶️",cat:"Media & Content",summary:"Faceless YouTube channels producing content via automation and outsourcing.",startup:"$500–$3k",income:"$10k–$100k+/yr",diff:"Medium",tags:["Passive","Media","Remote"]},
+  {name:"Podcast / Media Company",emoji:"🎙️",cat:"Media & Content",summary:"Audio or video content with advertising, sponsorship, and subscription revenue.",startup:"$1k–$5k",income:"$20k–$500k/yr",diff:"Medium",tags:["Media","Brand"]},
+  {name:"Social Media Management",emoji:"📸",cat:"Marketing",summary:"Manage social media accounts and create content for businesses.",startup:"$500–$2k",income:"$30k–$150k/yr",diff:"Low",tags:["Service","Remote","B2B"]},
+  {name:"Trucking / Freight",emoji:"🚛",cat:"Transportation",summary:"Own and operate freight trucks. High demand, government and private contracts.",startup:"$15k–$150k",income:"$60k–$300k/yr",diff:"Medium",tags:["Asset","Local/National"]},
+  {name:"Rideshare / Transportation",emoji:"🚗",cat:"Transportation",summary:"Uber/Lyft driving, medical transport, or private car service.",startup:"$5k–$20k",income:"$30k–$80k/yr",diff:"Low",tags:["Local","Service"]},
+  {name:"Construction Company",emoji:"🔨",cat:"Construction",summary:"General contracting for residential and commercial building projects.",startup:"$10k–$50k",income:"$100k–$2M+",diff:"High",tags:["License Required","Local"]},
+  {name:"Plumbing Business",emoji:"🔧",cat:"Construction",summary:"Licensed plumbing services for residential and commercial clients.",startup:"$10k–$30k",income:"$60k–$200k/yr",diff:"Medium",tags:["License Required","Local"]},
+  {name:"Electrical Contractor",emoji:"⚡",cat:"Construction",summary:"Commercial and residential electrical installation and maintenance.",startup:"$10k–$40k",income:"$80k–$300k/yr",diff:"High",tags:["License Required","Local"]},
+  {name:"HVAC Business",emoji:"❄️",cat:"Construction",summary:"Heating, ventilation, and air conditioning installation and service.",startup:"$10k–$50k",income:"$80k–$300k/yr",diff:"High",tags:["License Required","Recurring"]},
+  {name:"Roofing Company",emoji:"🏗️",cat:"Construction",summary:"Roof installation, repair, and replacement for homes and businesses.",startup:"$10k–$40k",income:"$80k–$500k/yr",diff:"Medium",tags:["Local","Seasonal"]},
+  {name:"Photography Business",emoji:"📷",cat:"Creative",summary:"Wedding, commercial, real estate, or portrait photography services.",startup:"$2k–$10k",income:"$30k–$150k/yr",diff:"Low",tags:["Creative","Local"]},
+  {name:"Videography / Video Production",emoji:"🎬",cat:"Creative",summary:"Create commercial videos, documentaries, social media content, or events.",startup:"$3k–$15k",income:"$40k–$200k/yr",diff:"Medium",tags:["Creative","B2B"]},
+  {name:"Graphic Design Agency",emoji:"🎨",cat:"Creative",summary:"Branding, logos, marketing materials, and visual design for businesses.",startup:"$500–$3k",income:"$30k–$200k/yr",diff:"Low",tags:["Creative","Remote","B2B"]},
+  {name:"Event Planning",emoji:"🎉",cat:"Events",summary:"Plan and coordinate weddings, corporate events, and private parties.",startup:"$2k–$8k",income:"$40k–$200k/yr",diff:"Medium",tags:["Events","Local"]},
+  {name:"Security Guard Company",emoji:"🛡️",cat:"Security",summary:"Provide security personnel for businesses, events, and residential properties.",startup:"$5k–$25k",income:"$80k–$500k/yr",diff:"High",tags:["License Required","Gov Contracts"]},
+  {name:"Janitorial Services",emoji:"🧽",cat:"Home Services",summary:"Commercial cleaning for offices, schools, and government buildings.",startup:"$2k–$10k",income:"$50k–$300k/yr",diff:"Low",tags:["B2B","Gov Contracts","Recurring"]},
+  {name:"Moving Company",emoji:"📦",cat:"Transportation",summary:"Residential and commercial moving services.",startup:"$10k–$40k",income:"$60k–$300k/yr",diff:"Medium",tags:["Local","Asset"]},
+  {name:"Bookkeeping / Accounting",emoji:"📊",cat:"Financial Services",summary:"Manage financial records for small businesses on a monthly retainer.",startup:"$500–$2k",income:"$50k–$200k/yr",diff:"Low",tags:["Remote","Recurring","B2B"]},
+  {name:"Insurance Agency",emoji:"📋",cat:"Financial Services",summary:"Sell insurance products as an independent agent or broker.",startup:"$2k–$10k",income:"$40k–$300k/yr",diff:"High",tags:["License Required","Recurring"]},
+  {name:"Mortgage Brokerage",emoji:"🏦",cat:"Financial Services",summary:"Connect home buyers with lenders and earn origination fees.",startup:"$5k–$20k",income:"$60k–$300k/yr",diff:"High",tags:["License Required","Finance"]},
+  {name:"Tax Preparation Service",emoji:"🧾",cat:"Financial Services",summary:"Prepare individual and business tax returns seasonally.",startup:"$2k–$8k",income:"$30k–$150k/yr",diff:"Low",tags:["Seasonal","Local","License Required"]},
+  {name:"Real Estate Agent / Brokerage",emoji:"🔑",cat:"Real Estate",summary:"Help buyers and sellers transact real estate and earn commissions.",startup:"$2k–$8k",income:"$50k–$500k/yr",diff:"Medium",tags:["License Required","Commission"]},
+  {name:"Property Management Company",emoji:"🏘️",cat:"Real Estate",summary:"Manage rental properties for owners — collect rent, maintenance, tenants.",startup:"$3k–$15k",income:"$50k–$300k/yr",diff:"Medium",tags:["Real Estate","Recurring"]},
+  {name:"Virtual Assistant Business",emoji:"🖥️",cat:"Professional Services",summary:"Provide administrative support to businesses remotely.",startup:"$200–$1k",income:"$20k–$80k/yr",diff:"Low",tags:["Remote","Service"]},
+  {name:"Online Course / Education",emoji:"📚",cat:"Education",summary:"Create and sell online courses teaching a specific skill or knowledge area.",startup:"$500–$3k",income:"$20k–$500k/yr",diff:"Medium",tags:["Passive","Digital"]},
+  {name:"Tutoring Business",emoji:"✏️",cat:"Education",summary:"Academic tutoring for K-12 students in-person or online.",startup:"$500–$2k",income:"$20k–$100k/yr",diff:"Low",tags:["Local","Remote","Education"]},
+  {name:"Childcare / Daycare",emoji:"🧒",cat:"Education",summary:"Licensed childcare center or in-home daycare for working parents.",startup:"$10k–$50k",income:"$40k–$200k/yr",diff:"High",tags:["License Required","Local"]},
+  {name:"Hair Salon / Barbershop",emoji:"✂️",cat:"Beauty & Wellness",summary:"Full-service hair salon or barbershop serving walk-in and appointment clients.",startup:"$20k–$75k",income:"$50k–$300k/yr",diff:"Medium",tags:["License Required","Local"]},
+  {name:"Nail Salon",emoji:"💅",cat:"Beauty & Wellness",summary:"Manicure, pedicure, and nail art services.",startup:"$15k–$60k",income:"$40k–$200k/yr",diff:"Medium",tags:["License Required","Local"]},
+  {name:"Medical Spa",emoji:"💆",cat:"Beauty & Wellness",summary:"Offer medical-grade aesthetic treatments under physician supervision.",startup:"$50k–$250k",income:"$200k–$2M/yr",diff:"Very High",tags:["License Required","High Revenue"]},
+  {name:"Pet Care / Dog Walking",emoji:"🐕",cat:"Pet Services",summary:"Dog walking, pet sitting, and boarding services for pet owners.",startup:"$500–$3k",income:"$20k–$80k/yr",diff:"Low",tags:["Local","Service"]},
+  {name:"Pet Grooming",emoji:"🐩",cat:"Pet Services",summary:"Mobile or storefront pet grooming and styling services.",startup:"$5k–$30k",income:"$30k–$120k/yr",diff:"Low",tags:["License Required","Local"]},
+  {name:"Veterinary Clinic",emoji:"🐾",cat:"Pet Services",summary:"Medical care for animals. Requires licensed veterinarian.",startup:"$250k–$1M",income:"$200k–$2M/yr",diff:"Very High",tags:["License Required","High Revenue"]},
+  {name:"Auto Detailing",emoji:"🚘",cat:"Automotive",summary:"Mobile or shop-based car cleaning and detailing services.",startup:"$2k–$15k",income:"$30k–$150k/yr",diff:"Low",tags:["Mobile","Local"]},
+  {name:"Auto Repair Shop",emoji:"🔩",cat:"Automotive",summary:"Mechanical repair and maintenance for vehicles.",startup:"$30k–$150k",income:"$80k–$400k/yr",diff:"High",tags:["License Required","Local"]},
+  {name:"Towing Company",emoji:"🚛",cat:"Automotive",summary:"Vehicle towing services for breakdowns, accidents, and impounds.",startup:"$15k–$80k",income:"$60k–$200k/yr",diff:"Medium",tags:["Asset","License Required","Local"]},
+  {name:"Printing & Signage",emoji:"🖨️",cat:"Business Services",summary:"Print marketing materials, banners, signs, and branded merchandise.",startup:"$10k–$60k",income:"$50k–$300k/yr",diff:"Medium",tags:["Equipment","B2B"]},
+  {name:"Pharmacy",emoji:"💊",cat:"Healthcare",summary:"Dispense prescription medications with pharmacist on staff.",startup:"$200k–$500k",income:"$300k–$2M/yr",diff:"Very High",tags:["License Required","Healthcare"]},
+  {name:"Medical Billing",emoji:"🏥",cat:"Healthcare",summary:"Process insurance claims and billing for medical practices.",startup:"$1k–$5k",income:"$40k–$200k/yr",diff:"Medium",tags:["Remote","Healthcare","B2B"]},
+  {name:"Freight Brokerage",emoji:"🚢",cat:"Transportation",summary:"Connect shippers with carriers and earn broker commission.",startup:"$5k–$20k",income:"$60k–$400k/yr",diff:"Medium",tags:["License Required","Remote","B2B"]},
+  {name:"Drone Services",emoji:"🚁",cat:"Technology",summary:"FAA-licensed drone photography, inspection, mapping, and delivery.",startup:"$3k–$15k",income:"$40k–$200k/yr",diff:"Medium",tags:["License Required","Tech","B2B"]},
+  {name:"Solar Installation",emoji:"☀️",cat:"Energy",summary:"Install solar panels for homes and commercial buildings.",startup:"$30k–$100k",income:"$100k–$1M/yr",diff:"High",tags:["License Required","Green Energy"]},
+  {name:"Laundromat",emoji:"👕",cat:"Retail",summary:"Self-service coin-operated laundry facility. Passive income model.",startup:"$100k–$500k",income:"$50k–$200k/yr",diff:"Medium",tags:["Passive","Brick & Mortar"]},
+  {name:"Car Wash",emoji:"🚿",cat:"Automotive",summary:"Automated or full-service car wash facility.",startup:"$100k–$500k",income:"$100k–$500k/yr",diff:"High",tags:["Asset","Local"]},
+  {name:"Storage Facility",emoji:"📦",cat:"Real Estate",summary:"Self-storage units for residential and commercial customers.",startup:"$500k–$2M",income:"$100k–$1M/yr",diff:"High",tags:["Passive","Real Estate"]},
+  {name:"Vending Machine Business",emoji:"🎰",cat:"Passive Income",summary:"Place vending machines in high-traffic locations and collect passive income.",startup:"$5k–$30k",income:"$10k–$100k/yr",diff:"Low",tags:["Passive","Semi-passive"]},
+  {name:"ATM Business",emoji:"🏧",cat:"Passive Income",summary:"Place ATM machines in businesses and earn per-transaction fees.",startup:"$3k–$15k",income:"$10k–$80k/yr",diff:"Low",tags:["Passive","Finance"]},
+  {name:"Dropshipping",emoji:"📬",cat:"Retail",summary:"Sell products online without holding inventory — supplier ships direct.",startup:"$500–$2k",income:"$10k–$100k/yr",diff:"Medium",tags:["Online","Low Risk"]},
+  {name:"Print on Demand",emoji:"👕",cat:"Creative",summary:"Design custom merchandise sold online — Printful or Printify fulfills orders.",startup:"$200–$1k",income:"$5k–$50k/yr",diff:"Low",tags:["Passive","Creative","Online"]},
+  {name:"Airbnb / Short-Term Rental",emoji:"🏡",cat:"Real Estate",summary:"Rent property on Airbnb or VRBO for short-term stays.",startup:"$5k–$50k",income:"$20k–$200k/yr",diff:"Medium",tags:["Real Estate","Passive"]},
+  {name:"Pawn Shop",emoji:"💎",cat:"Retail",summary:"Buy, sell, and loan money against personal property.",startup:"$50k–$200k",income:"$80k–$500k/yr",diff:"High",tags:["License Required","Local"]},
+  {name:"Cell Phone Repair",emoji:"📱",cat:"Technology",summary:"Repair cracked screens, batteries, and other smartphone/tablet issues.",startup:"$5k–$20k",income:"$40k–$150k/yr",diff:"Low",tags:["Local","Tech"]},
+  {name:"Cybersecurity Company",emoji:"🔐",cat:"Technology",summary:"Protect businesses from digital threats — audits, monitoring, training.",startup:"$5k–$20k",income:"$100k–$1M+/yr",diff:"High",tags:["Tech","B2B","Gov Contracts"]},
+  {name:"Cloud Services / Web Hosting",emoji:"☁️",cat:"Technology",summary:"Resell or white-label cloud and hosting services to businesses.",startup:"$1k–$5k",income:"$30k–$200k/yr",diff:"Medium",tags:["Tech","Recurring","Remote"]},
+  {name:"Data Analytics Firm",emoji:"📈",cat:"Technology",summary:"Help businesses make decisions using data analysis and business intelligence.",startup:"$2k–$10k",income:"$80k–$500k/yr",diff:"High",tags:["Tech","B2B","Remote"]},
+  {name:"AI Consulting",emoji:"🤖",cat:"Technology",summary:"Help companies implement AI tools, automation, and machine learning solutions.",startup:"$1k–$5k",income:"$100k–$500k/yr",diff:"High",tags:["Tech","B2B","Remote","Emerging"]},
+  {name:"Logistics & Warehousing",emoji:"🏭",cat:"Transportation",summary:"Store, manage, and distribute products for businesses.",startup:"$50k–$300k",income:"$200k–$2M+/yr",diff:"High",tags:["B2B","Asset","Gov Contracts"]},
+  {name:"Courier / Delivery Service",emoji:"🛵",cat:"Transportation",summary:"Local same-day delivery for businesses and consumers.",startup:"$5k–$20k",income:"$40k–$150k/yr",diff:"Low",tags:["Local","Service"]},
+  {name:"Clothing / Fashion Brand",emoji:"👗",cat:"Creative",summary:"Design and sell branded clothing online or in retail.",startup:"$5k–$20k",income:"$20k–$200k/yr",diff:"Medium",tags:["Product","Creative","Brand"]},
+  {name:"Supplement / Health Products Brand",emoji:"💊",cat:"Health & Wellness",summary:"Create and sell vitamins, supplements, or wellness products.",startup:"$10k–$50k",income:"$30k–$500k/yr",diff:"High",tags:["Product","Health","Online"]},
+  {name:"Candle / Home Goods Business",emoji:"🕯️",cat:"Creative",summary:"Handmade candles and home décor sold on Etsy, Amazon, or your own site.",startup:"$1k–$5k",income:"$10k–$80k/yr",diff:"Low",tags:["Product","Creative","Etsy"]},
+  {name:"Pest Control",emoji:"🐛",cat:"Home Services",summary:"Exterminate and prevent pests for residential and commercial clients.",startup:"$10k–$40k",income:"$60k–$300k/yr",diff:"Medium",tags:["License Required","Local","Recurring"]},
+  {name:"Pool Service",emoji:"🏊",cat:"Home Services",summary:"Clean and maintain swimming pools on weekly or monthly contracts.",startup:"$5k–$20k",income:"$40k–$150k/yr",diff:"Low",tags:["Recurring","Local","Seasonal"]},
+  {name:"Elder Care / Senior Services",emoji:"👴",cat:"Healthcare",summary:"Non-medical companion care, transportation, and home assistance for seniors.",startup:"$5k–$20k",income:"$40k–$200k/yr",diff:"Medium",tags:["Local","Healthcare","License Required"]},
+  {name:"Mental Health Practice",emoji:"🧠",cat:"Healthcare",summary:"Therapy and counseling services — LCSW, psychologist, or counselor.",startup:"$5k–$20k",income:"$80k–$300k/yr",diff:"High",tags:["License Required","Healthcare"]},
+  {name:"Dental Practice",emoji:"🦷",cat:"Healthcare",summary:"Provide dental care — requires dentist license and significant capital.",startup:"$300k–$600k",income:"$300k–$1M+/yr",diff:"Very High",tags:["License Required","Healthcare","High Revenue"]},
+  {name:"Spa / Massage Therapy",emoji:"🧖",cat:"Beauty & Wellness",summary:"Relaxation and therapeutic massage services.",startup:"$10k–$50k",income:"$40k–$200k/yr",diff:"Medium",tags:["License Required","Local","Wellness"]},
+  {name:"Brewery / Distillery",emoji:"🍺",cat:"Food & Beverage",summary:"Craft beer, spirits, or wine production and taproom operations.",startup:"$100k–$500k",income:"$100k–$1M/yr",diff:"Very High",tags:["License Required","Food","Local"]},
+  {name:"Bakery",emoji:"🧁",cat:"Food & Beverage",summary:"Baked goods sold retail, wholesale, or through farmers markets.",startup:"$5k–$50k",income:"$30k–$200k/yr",diff:"Medium",tags:["Food","Local"]},
+  {name:"Coffee Shop",emoji:"☕",cat:"Food & Beverage",summary:"Brick-and-mortar or mobile coffee service.",startup:"$25k–$100k",income:"$50k–$250k/yr",diff:"Medium",tags:["Food","Local"]},
+  {name:"Ghost Kitchen / Cloud Kitchen",emoji:"🍜",cat:"Food & Beverage",summary:"Delivery-only restaurant operating from a shared commercial kitchen.",startup:"$10k–$40k",income:"$40k–$200k/yr",diff:"Medium",tags:["Food","Online","Delivery"]},
+  {name:"Franchise Business",emoji:"🏪",cat:"Business Models",summary:"Buy into a proven business system — McDonald's, 7-Eleven, Subway, or smaller brands.",startup:"$50k–$1M+",income:"$50k–$500k/yr",diff:"High",tags:["Franchise","Asset"]},
+  {name:"Nonprofit Organization",emoji:"🤝",cat:"Nonprofits",summary:"501(c)(3) charity or nonprofit for community services, grants, and donations.",startup:"$1k–$5k",income:"Varies",diff:"Medium",tags:["Nonprofit","Mission-driven"]},
+  {name:"Social Enterprise",emoji:"🌍",cat:"Business Models",summary:"For-profit business with a social mission embedded in its core model.",startup:"$2k–$20k",income:"Varies",diff:"Medium",tags:["Mission-driven","B Corp"]},
+  {name:"Import / Export Business",emoji:"🌐",cat:"International",summary:"Source products internationally and sell domestically, or export U.S. goods.",startup:"$10k–$50k",income:"$50k–$500k/yr",diff:"High",tags:["International","Product"]},
+  {name:"Jewelry Business",emoji:"💍",cat:"Creative",summary:"Design, create, or curate and resell jewelry online or in retail.",startup:"$2k–$20k",income:"$20k–$200k/yr",diff:"Medium",tags:["Creative","Product","Etsy"]},
+  {name:"Notary / Mobile Notary",emoji:"📜",cat:"Professional Services",summary:"Certify documents and signatures. Mobile notaries travel to clients.",startup:"$200–$1k",income:"$10k–$60k/yr",diff:"Low",tags:["License Required","Local","Service"]},
+  {name:"Translation Services",emoji:"🌐",cat:"Professional Services",summary:"Translate documents or provide interpretation for businesses and government.",startup:"$500–$2k",income:"$30k–$150k/yr",diff:"Low",tags:["Remote","B2B","Gov Contracts"]},
+  {name:"Executive Recruitment / Headhunting",emoji:"🎯",cat:"Professional Services",summary:"Match top talent with companies and earn placement fees of 15-25% of salary.",startup:"$2k–$10k",income:"$100k–$1M/yr",diff:"High",tags:["B2B","Commission","High Value"]},
+  {name:"Commercial Real Estate Investing",emoji:"🏢",cat:"Real Estate",summary:"Purchase commercial property — office, retail, industrial — for rental income.",startup:"$100k–$1M+",income:"$100k–$5M+/yr",diff:"Very High",tags:["Asset","Real Estate","Passive"]},
+  {name:"Fitness Studio / Gym",emoji:"🏋️",cat:"Health & Wellness",summary:"CrossFit, yoga, pilates, or full gym with memberships.",startup:"$30k–$150k",income:"$60k–$500k/yr",diff:"High",tags:["Local","Recurring","Health"]},
+  {name:"E-Learning Platform",emoji:"🎓",cat:"Education",summary:"Build a subscription platform or marketplace for online education.",startup:"$10k–$50k",income:"$50k–$1M+/yr",diff:"High",tags:["Digital","SaaS","Passive"]},
+  {name:"SaaS / Software Product",emoji:"💾",cat:"Technology",summary:"Build and sell subscription software that solves a specific business problem.",startup:"$10k–$100k",income:"$50k–$10M+/yr",diff:"Very High",tags:["Tech","Recurring","High Value"]},
+  {name:"Podcast Agency",emoji:"🎧",cat:"Media & Content",summary:"Produce, edit, and grow podcasts for brands and individuals.",startup:"$2k–$8k",income:"$40k–$200k/yr",diff:"Low",tags:["Creative","Remote","B2B"]},
+  {name:"PR & Communications Firm",emoji:"📣",cat:"Marketing",summary:"Manage public image, media relations, and communications strategy.",startup:"$2k–$8k",income:"$60k–$400k/yr",diff:"Medium",tags:["B2B","Professional"]},
+  {name:"Legal Services (Paralegal)",emoji:"⚖️",cat:"Professional Services",summary:"Paralegal or legal document prep services (without practicing law).",startup:"$1k–$5k",income:"$30k–$100k/yr",diff:"Medium",tags:["Service","License Required"]},
+  {name:"Healthcare Staffing",emoji:"🩺",cat:"Healthcare",summary:"Staff hospitals and clinics with nurses, CNAs, and medical professionals.",startup:"$10k–$40k",income:"$200k–$5M/yr",diff:"High",tags:["B2B","Healthcare","Gov Contracts"]},
+  {name:"Pressure Washing",emoji:"💧",cat:"Home Services",summary:"High-pressure washing for driveways, buildings, decks, and fleets.",startup:"$3k–$15k",income:"$40k–$150k/yr",diff:"Low",tags:["Local","Mobile","Seasonal"]}
+];
+
+const GOV_STEPS_FEDERAL = [
+  {title:"Register on SAM.gov",desc:"System for Award Management is the official federal vendor database. Free registration. Required for ALL federal contracts and grants. Must renew annually.",links:["SAM.gov","login.gov"],note:"Takes 7-10 business days after submission. Your CAGE code is assigned automatically. CAGE code is required on all bids."},
+  {title:"Get Your NAICS Codes Right",desc:"North American Industry Classification System codes define what you sell. You can have multiple. Choose codes that match actual services you can provide.",links:["NAICS Lookup: census.gov/naics"],note:"Wrong NAICS codes = missing opportunities. Review codes for every bid — sometimes a contract has multiple eligible NAICS codes."},
+  {title:"Create a Capability Statement",desc:"Your 1-page government resume. Include: core competencies, past performance, certifications, NAICS codes, CAGE code, UEI, and contact info.",links:["SBA Capability Statement Template"],note:"Capability statements must match your SAM.gov profile exactly — same business name, address, and NAICS codes."},
+  {title:"Register on eMMA (Maryland State Contracts)",desc:"eMMA (eMaryland Marketplace Advantage) is Maryland's state procurement portal. Lists all state agency solicitations, RFPs, and IFBs.",links:["emmd.maryland.gov"],note:"Set up email alerts by category. Maryland state agencies post billions in contracts annually including IT, construction, healthcare, and professional services."},
+  {title:"Research on SAM.gov & USASpending.gov",desc:"Search opportunities by NAICS code. Review who won past contracts and for how much. Build your target agency list.",links:["SAM.gov/search","USASpending.gov"],note:"Start with Sources Sought notices — agencies gauge interest before writing the full RFP. Responding positions you as a known vendor."},
+  {title:"Attend Industry Days",desc:"Federal agencies hold pre-solicitation meetings where they explain upcoming contracts. Attendance lets you meet contracting officers and shape RFP requirements.",links:["SAM.gov Events","SBA Events Calendar"],note:"Maryland: Watch for DISA, NIH, NSA, SSA, and USACE industry days — all major spenders in the region."},
+  {title:"Write Your First Proposal (RFP Response)",desc:"Follow the RFP instructions exactly. Address every evaluation criterion. Price competitively but profitably. Submit electronically via SAM.gov or agency system.",links:["Maryland PTAC (free proposal review)","SBA Online Learning Center"],note:"Maryland PTAC at ptac.umd.edu reviews proposals for free before submission. Use them — they have former contracting officers on staff."},
+  {title:"Win Your First Contract & Perform Perfectly",desc:"Deliver on time, within budget, document everything. Your CPARS rating (contractor performance) follows you and determines future awards.",links:["CPARS.gov"],note:"A single 'Very Good' or 'Exceptional' CPARS rating is worth more than any certification — past performance is the #1 evaluation factor in most solicitations."}
+];
+
+const GOV_STEPS_STATE = [
+  {title:"Register on eMMA",desc:"Maryland's primary procurement portal for all state agency purchases over $25k.",links:["emmd.maryland.gov"],note:"Set up alerts by commodity code and agency — you'll get emailed every time a relevant solicitation is posted."},
+  {title:"Get MBE/DBE Certification",desc:"Maryland's Minority Business Enterprise certification opens set-aside contracts across all state agencies and many local governments.",links:["mdot.maryland.gov/MBE","Maryland GOMA"],note:"The Maryland MBE list is publicly searchable — agencies use it to find certified vendors even when contracts aren't officially set aside."},
+  {title:"Register with Local County Procurement",desc:"Each of Maryland's 23 counties plus Baltimore City has its own procurement office. Register as a vendor in your home county and target counties.",links:["Prince George's County","Montgomery County","Anne Arundel County","Baltimore City Procurement"],note:"County contracts under $100k are often 'small purchases' with less competition and faster awards. Great starting point."},
+  {title:"Track Maryland BPW (Board of Public Works)",desc:"Maryland's Board of Public Works approves all major state contracts. Meetings are public and posted online — excellent intelligence on upcoming opportunities.",links:["bpw.maryland.gov"],note:"BPW agenda shows contracts about to be awarded. If you see your competitor winning work you could do — that's your next bid target."},
+  {title:"Apply to Maryland Department of General Services",desc:"DGS manages state facilities, construction, and services contracts. One of the largest state buyers.",links:["dgs.maryland.gov"],note:"DGS pre-qualifies contractors for construction. Get pre-qualified before bidding on construction contracts over $100k."}
+];
+
+const CERTS_DATA = [
+  {title:"SBA 8(a) Business Development",reqs:"Owned 51%+ by socially/economically disadvantaged person. Personal net worth under $750k. In business 2+ years.",benefit:"Set-aside contracts, sole-source awards up to $4M (goods/services) or $7M (manufacturing), business mentorship.",where:"certify.SBA.gov",time:"90-120 days",cost:"Free"},
+  {title:"HUBZone Certification",reqs:"51%+ owned by U.S. citizen, at least 35% of employees live in HUBZone, principal office in HUBZone.",benefit:"Price evaluation preference of 10% in competitive bids. Set-aside contracts.",where:"certify.SBA.gov/hubzone",time:"60-90 days",cost:"Free"},
+  {title:"WOSB — Women-Owned Small Business",reqs:"51%+ owned and controlled by woman/women who are U.S. citizens.",benefit:"Set-aside contracts in industries where women are underrepresented.",where:"certify.SBA.gov",time:"30-60 days",cost:"Free"},
+  {title:"SDVOSB — Service-Disabled Veteran",reqs:"51%+ owned by service-disabled veteran. Veteran must manage daily operations.",benefit:"Set-aside contracts at VA and across federal agencies. VA mandates 3% of spending to SDVOSBs.",where:"certify.SBA.gov",time:"30-60 days",cost:"Free"},
+  {title:"Maryland MBE Certification",reqs:"51%+ owned by minority or woman who is a U.S. citizen. Personal net worth under $1.47M.",benefit:"Access to Maryland's MBE set-aside and goal contracts. Required by many prime contractors.",where:"mdot.maryland.gov/MBE",time:"45-90 days",cost:"Free"},
+  {title:"DBE — Disadvantaged Business Enterprise",reqs:"Same as MBE eligibility. Must work in transportation-related industry.",benefit:"Set-asides on all federally-funded transportation projects (roads, bridges, airports, transit).",where:"mdot.maryland.gov",time:"45-90 days",cost:"Free"}
+];
+
+const CREDIT_TIERS = [
+  {num:"01",title:"Tier 1 — Foundation (0–3 months)",items:["Get D-U-N-S number / UEI via SAM.gov registration","Open business checking account (Chase, BofA, or credit union)","Apply for Uline.com net-30 account — shipping supplies","Apply for Quill.com net-30 — office supplies (reports to D&B)","Apply for Grainger.com net-30 — industrial supplies","Apply for Summa Office Supplies net-30","Apply for Crown Office Supplies net-30","Pay all net-30 invoices early or on time, every time","Goal: Establish D&B Paydex score of 80+"]},
+  {num:"02",title:"Tier 2 — Retail Credit (3–6 months)",items:["Apply for Home Depot Pro Business Account (EIN only)","Apply for Lowes Business Credit Account","Apply for Staples Business Credit","Apply for Office Depot Business Credit","Apply for Sam's Club Business Credit","Apply for Amazon Business Line of Credit","Apply for Best Buy Business Credit","Keep utilization below 30% on all accounts","Goal: 5+ accounts with $500-$5k limits each"]},
+  {num:"03",title:"Tier 3 — Fleet & Gas Cards (6–9 months)",items:["Apply for WEX Fleet Card (strong D&B reporter)","Apply for Shell Fleet Card","Apply for Fuelman (fleet management)","Apply for BP Business Solutions","Apply for Chevron Texaco Business Card","Use fleet cards for ALL business fuel and vehicle expenses","Keep all payments current — no late payments","Apply for store credit cards at vendors you actually use","Goal: $10k+ in credit across Tiers 1–3"]},
+  {num:"04",title:"Tier 4 — Bank Lines & SBA Loans (12–18 months)",items:["Apply for business credit card at your own bank first","Apply for Chase Ink Business Cash ($0 annual fee)","Apply for Capital One Spark Miles for Business","Request business line of credit from your bank ($10k–$50k)","Apply for SBA Microloan (up to $50k, low interest)","Apply for SBA 7(a) loan (up to $5M once established)","Consider Fundbox or BlueVine for revolving credit lines","Maintain 2+ years of business banking history","Goal: $50k–$250k in available business credit"]}
+];
+
+// ─── RENDER FUNCTIONS ────────────────────────────────────────────────────────
+
+function renderPhases() {
+  const container = document.getElementById('phases');
+  if (!container) return;
+  container.innerHTML = PHASES.map((ph,pi) => `
+    <div class="phase-container">
+      <div class="phase-header" onclick="togglePhase(${pi})">
+        <div class="phase-num">${String(pi+1).padStart(2,'0')}</div>
+        <div class="phase-title">${ph.title}</div>
+        <div class="phase-toggle" id="ptoggle-${pi}">▼</div>
+      </div>
+      <div class="phase-body ${pi===0?'open':''}" id="pbody-${pi}">
+        ${ph.steps.map((s,si) => `
+          <div class="step-row">
+            <div class="step-num">${si+1}</div>
+            <div class="step-content">
+              <h4>${s.title}</h4>
+              <p>${s.desc}</p>
+              ${s.resources.map(r=>`<span class="resource">${r}</span>`).join('')}
+              ${s.tip?`<div class="tip">💡 <strong>Example/Tip:</strong> ${s.tip}</div>`:''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function togglePhase(i) {
+  const body = document.getElementById(`pbody-${i}`);
+  const toggle = document.getElementById(`ptoggle-${i}`);
+  const open = body.classList.toggle('open');
+  toggle.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+function renderStates() {
+  const sel = document.getElementById('stateSelect');
+  if (!sel) return;
+  Object.keys(STATES).sort().forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    sel.appendChild(opt);
+  });
+  
+  const highlights = document.getElementById('stateHighlights');
+  if (!highlights) return;
+  const featured = ['Wyoming','Nevada','Delaware','Florida','Texas','Virginia','Maryland'];
+  highlights.innerHTML = featured.map(s => {
+    const d = STATES[s];
+    if (!d) return '';
+    return `<div class="card">
+      <div class="card-icon">🏛️</div>
+      <div class="card-title">${s}</div>
+      <div class="card-desc">${d.notes}</div>
+      <div style="margin-top:.7rem;display:flex;gap:.4rem;flex-wrap:wrap">
+        <span class="card-tag">LLC: $${d.llcFee}</span>
+        <span class="card-tag blue">Annual: $${d.annualFee}</span>
+        <span class="card-tag green">Tax: ${d.stateTax}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showStateInfo() {
+  const sel = document.getElementById('stateSelect');
+  const info = document.getElementById('stateInfo');
+  const state = sel.value;
+  if (!state || !STATES[state]) { info.classList.remove('show'); return; }
+  const d = STATES[state];
+  info.classList.add('show');
+  info.innerHTML = `
+    <h3>📍 ${state} — Business Requirements</h3>
+    <div class="state-detail">
+      <div class="state-item"><div class="state-item-label">LLC Filing Fee</div><div class="state-item-value">$${d.llcFee}</div></div>
+      <div class="state-item"><div class="state-item-label">Annual Report Fee</div><div class="state-item-value">$${d.annualFee}</div></div>
+      <div class="state-item"><div class="state-item-label">Annual Report Due</div><div class="state-item-value">${d.annualDue}</div></div>
+      <div class="state-item"><div class="state-item-label">State Corp Tax</div><div class="state-item-value">${d.stateTax}</div></div>
+      <div class="state-item"><div class="state-item-label">State Sales Tax</div><div class="state-item-value">${d.salesTax}</div></div>
+      <div class="state-item"><div class="state-item-label">Strong Industries</div><div class="state-item-value">${d.favors}</div></div>
+    </div>
+    <div style="background:rgba(201,162,39,.08);border-left:3px solid var(--gold);padding:.8rem 1rem;border-radius:0 8px 8px 0;font-size:.83rem;margin-top:1rem;color:var(--gray4)">
+      <strong>Key Notes:</strong> ${d.notes}
+    </div>
+    <div style="margin-top:1rem;padding:.8rem 1rem;background:var(--white);border-radius:8px;border:1px solid var(--gray1);font-size:.82rem;color:var(--gray3)">
+      <strong>Where to File:</strong> Visit the ${state} Secretary of State website (or equivalent) to register your LLC. Search "${state} Secretary of State LLC filing" for the official portal. Most states allow online filing.
+    </div>`;
+}
+
+function renderBizTypes() {
+  const cats = [...new Set(BIZ_TYPES.map(b=>b.cat))].sort();
+  const filter = document.getElementById('bizFilter');
+  if (!filter) return;
+  filter.innerHTML = `<button class="filter-btn active" onclick="filterCat(this,'ALL')">All (${BIZ_TYPES.length})</button>` +
+    cats.map(c=>`<button class="filter-btn" onclick="filterCat(this,'${c}')">${c}</button>`).join('');
+  renderBizGrid(BIZ_TYPES);
+}
+
+function renderBizGrid(items) {
+  const grid = document.getElementById('bizGrid');
+  if (!grid) return;
+  grid.innerHTML = items.map(b => `
+    <div class="biz-card" onclick="showBizModal('${b.name.replace(/'/g,"\\'")}')">
+      <div class="biz-card-head">
+        <div class="biz-emoji">${b.emoji}</div>
+        <div>
+          <div class="biz-name">${b.name}</div>
+          <span class="biz-cat">${b.cat}</span>
+        </div>
+      </div>
+      <div class="biz-summary">${b.summary}</div>
+      <div class="biz-meta">
+        <span class="meta-pill startup">Start: ${b.startup}</span>
+        <span class="meta-pill income">Income: ${b.income}</span>
+        <span class="meta-pill diff">Diff: ${b.diff}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+let currentCat = 'ALL';
+function filterCat(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = cat;
+  applyFilters();
+}
+
+function filterBiz() {
+  applyFilters();
+}
+
+function applyFilters() {
+  const search = (document.getElementById('bizSearch')||{value:''}).value.toLowerCase();
+  let items = BIZ_TYPES;
+  if (currentCat !== 'ALL') items = items.filter(b=>b.cat===currentCat);
+  if (search) items = items.filter(b=>b.name.toLowerCase().includes(search)||b.summary.toLowerCase().includes(search)||b.cat.toLowerCase().includes(search));
+  renderBizGrid(items);
+}
+
+function showBizModal(name) {
+  const b = BIZ_TYPES.find(x=>x.name===name);
+  if (!b) return;
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.5rem">
+      <span style="font-size:2.5rem">${b.emoji}</span>
+      <div>
+        <div class="modal-title">${b.name}</div>
+        <div class="modal-sub">${b.cat} · Startup: ${b.startup} · Income: ${b.income} · Difficulty: ${b.diff}</div>
+      </div>
+    </div>
+    <p style="font-size:.88rem;color:var(--gray3);margin-bottom:1.2rem">${b.summary}</p>
+    <div class="modal-section">
+      <h4>Step-by-Step Launch Guide</h4>
+      <ul>
+        <li>Choose your business structure (LLC recommended for liability protection)</li>
+        <li>Register with your state Secretary of State / SDAT (Maryland)</li>
+        <li>Obtain your EIN from IRS.gov — free, 5 minutes online</li>
+        <li>Open a dedicated business bank account with your EIN</li>
+        ${b.tags.includes('License Required')?'<li>Research and obtain all required licenses and permits for your state and county</li>':''}
+        <li>Set up business accounting software (Wave free, QuickBooks $30/mo)</li>
+        <li>Build your website and professional online presence</li>
+        <li>Get General Liability insurance ($400-800/year for most businesses)</li>
+        <li>Create your pricing structure and service/product offerings</li>
+        <li>Launch marketing: Google Business Profile, social media, networking</li>
+        ${b.tags.includes('Gov Contracts')?'<li>Register on SAM.gov and eMMA for government contract opportunities</li>':''}
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h4>Key Licenses & Requirements</h4>
+      <ul>
+        ${b.tags.includes('License Required')?`<li>State professional license — check Maryland DLLR (dllr.maryland.gov)</li><li>County business license — check your county clerk's office</li>`:'<li>General business license (county level in Maryland)</li>'}
+        <li>General Liability insurance — most clients and contracts require proof</li>
+        <li>Business bank account required to establish credit and receive payments</li>
+        ${b.tags.includes('Food')?'<li>Maryland Food Service Facility License from Maryland DHMH</li>':''}
+        ${b.tags.includes('Healthcare')?'<li>Maryland state healthcare license — dhmh.maryland.gov</li>':''}
+      </ul>
+    </div>
+    <div class="modal-section">
+      <h4>Revenue & Growth Path</h4>
+      <ul>
+        <li>Year 1 target: ${b.startup.split('–')[0]} invested, focus on first 5-10 clients</li>
+        <li>Year 2: Systemize operations, hire first employee or contractor</li>
+        <li>Year 3+: Scale marketing, pursue larger clients, ${b.tags.includes('Gov Contracts')?'bid on government contracts':'consider licensing or franchising'}</li>
+        <li>Income potential: ${b.income}</li>
+      </ul>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+      ${b.tags.map(t=>`<span style="background:var(--navy);color:var(--gold);padding:.2rem .6rem;border-radius:4px;font-size:.75rem;font-weight:600">${t}</span>`).join('')}
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+function renderGovCon() {
+  const fed = document.getElementById('federalRoadmap');
+  if (fed) fed.innerHTML = GOV_STEPS_FEDERAL.map(s=>`
+    <div class="roadmap-step">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-content">
+        <h4>${s.title}</h4>
+        <p>${s.desc}</p>
+        ${s.links.map(l=>`<span class="link-pill">${l}</span>`).join('')}
+        ${s.note?`<div class="note">💡 ${s.note}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+  
+  const state = document.getElementById('stateContractRoadmap');
+  if (state) state.innerHTML = GOV_STEPS_STATE.map(s=>`
+    <div class="roadmap-step">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-content">
+        <h4>${s.title}</h4>
+        <p>${s.desc}</p>
+        ${s.links.map(l=>`<span class="link-pill">${l}</span>`).join('')}
+        ${s.note?`<div class="note">💡 ${s.note}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+
+  const certs = document.getElementById('certsContent');
+  if (certs) certs.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem">` +
+    CERTS_DATA.map(c=>`
+      <div class="credit-card">
+        <div class="credit-title">${c.title}</div>
+        <ul class="credit-list" style="margin-bottom:.8rem">
+          <li>${c.reqs}</li>
+          <li><strong>Benefit:</strong> ${c.benefit}</li>
+          <li><strong>Where to Apply:</strong> ${c.where}</li>
+          <li><strong>Timeline:</strong> ${c.time} · Cost: ${c.cost}</li>
+        </ul>
+      </div>
+    `).join('') + '</div>';
+
+  const find = document.getElementById('findContent');
+  if (find) find.innerHTML = `
+    <div class="alert green" style="margin-bottom:1.5rem">🔍 The best contracting officers are not found online — they're found at events, industry days, and through consistent follow-up. SAM.gov is the database; relationships win the contracts.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem">
+      ${[
+        {site:'SAM.gov/Search',desc:'Federal contract opportunities. Filter by NAICS, set-aside type, agency, and dollar value. Set email alerts.'},
+        {site:'USASpending.gov',desc:'See who won contracts, for how much, and from which agencies. Essential market research.'},
+        {site:'SBIR.gov',desc:'Small Business Innovation Research — R&D contracts. Up to $1.7M Phase II awards. No prior government experience required.'},
+        {site:'emmd.maryland.gov (eMMA)',desc:"Maryland state contract portal. All state agency RFPs, IFBs, and small purchase orders."},
+        {site:'GSA eBuy',desc:'Request quotes for services on existing GSA Schedule contracts. Open to all GSA Schedule holders.'},
+        {site:'GovWin IQ',desc:'Paid platform ($200-500/mo) with advanced contracting intelligence, pipeline data, and teaming opportunities.'},
+        {site:'Maryland PTAC (ptac.umd.edu)',desc:'Free government contracting help — proposal review, matchmaking events, certifications. Run by University of Maryland.'},
+        {site:'SBA SUBNet',desc:'Subcontracting opportunities posted by prime contractors required to use small businesses.'}
+      ].map(r=>`
+        <div class="credit-card">
+          <div class="credit-title">${r.site}</div>
+          <div style="font-size:.82rem;color:var(--gray3);line-height:1.5">${r.desc}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderCredit() {
+  const grid = document.getElementById('creditGrid');
+  if (!grid) return;
+  grid.innerHTML = CREDIT_TIERS.map(t=>`
+    <div class="credit-card">
+      <div class="credit-num">${t.num}</div>
+      <div class="credit-title">${t.title}</div>
+      <ul class="credit-list">
+        ${t.items.map(i=>`<li>${i}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`page-${id}`).classList.add('active');
+  const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b=>b.getAttribute('onclick')===`showPage('${id}')`);
+  if (btn) btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  
+  if (id==='setup') renderPhases();
+  if (id==='states') renderStates();
+  if (id==='types') renderBizTypes();
+  if (id==='govcon') renderGovCon();
+  if (id==='credit') renderCredit();
+}
+
+function switchTab(el, page, tab) {
+  document.querySelectorAll(`#page-${page} .tab`).forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll(`#page-${page} .tab-panel`).forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(`${page}-${tab}`).classList.add('active');
+}
+
+function closeModal(e) {
+  if (!e || e.target===document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+
+function handleEmailSubmit() {
+  const email = document.getElementById('emailInput').value;
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+  document.getElementById('pdfSuccess').style.display = 'block';
+  document.getElementById('emailInput').value = '';
+}
+
+function downloadPDFSample() {
+  alert('In a live deployment, your complete Business Mastery PDF would download here. The PDF includes:\n\n✅ All 50 State Checklists\n✅ 10-Phase Business Launch Roadmap\n✅ Government Contracting Playbook\n✅ Business Credit Blueprint\n✅ 100+ Business Type Profiles\n\nThis is the interactive web version — integrate with a real PDF generator (Puppeteer, PDFKit, or Adobe API) for production use.');
+}
+
+// Init home page
+renderPhases();
+</script>
+</body>
+</html>
